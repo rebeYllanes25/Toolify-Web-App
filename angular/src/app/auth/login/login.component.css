@@ -1,0 +1,26 @@
+/* Tamaño de la tarjeta */
+.login-card {
+  width: 400px;
+  border-radius: 20px;
+}
+
+/* Botón con color parecido al de la imagen */
+.custom-btn {
+  background-color: #4f5fb7;
+  border: none;
+}
+
+.custom-btn:hover {
+  background-color: #3c4c9c;
+}
+
+/* Input con bordes redondeados */
+.form-control, 
+.input-group-text {
+  border-radius: 10px;
+}
+
+/* Iconos grises */
+.input-group-text i {
+  color: #6c757d;
+}

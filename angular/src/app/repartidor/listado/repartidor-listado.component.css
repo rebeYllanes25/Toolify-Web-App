@@ -1,0 +1,85 @@
+.repartidor-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.titulo {
+  text-align: center;
+  font-size: 2rem;
+  color: #1976d2;
+  margin-bottom: 2rem;
+}
+
+/* Grid de tarjetas 3xN */
+.pedido-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+/* Tarjeta individual */
+.pedido-card {
+  background: #ffffff;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pedido-card:hover {
+  transform: scale(1.02);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.icono-usuario {
+  background-color: #e3f2fd;
+  padding: 8px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+
+.card-body p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.precio {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.pedido-card button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.6rem;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pedido-card button:hover {
+  background-color: #0f5ca8;
+}
+
+.sin-pedidos {
+  text-align: center;
+  font-size: 1rem;
+  color: #888;
+}

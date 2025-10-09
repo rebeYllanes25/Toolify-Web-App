@@ -1,0 +1,55 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.app-main {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Navbar inferior */
+.app-navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #ffffff;
+  border-top: 1px solid #ddd;
+  padding: 0.6rem 0.3rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.app-navbar a {
+  text-decoration: none;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+  flex: 1;
+}
+
+.app-navbar a i {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+  transition: color 0.2s ease;
+}
+
+.app-navbar a:hover,
+.app-navbar a.active {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.app-navbar a span {
+  font-size: 0.75rem;
+  margin-top: 2px;
+}

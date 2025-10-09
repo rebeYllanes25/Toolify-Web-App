@@ -1,0 +1,11 @@
+//para las alertas
+npm install toazter
+
+//para el pdf
+npm install pdfmake --save
+npm install --save-dev @types/pdfmake
+
+//para los graficos
+npm install chart.js --save
+npm install ng2-charts --save
+

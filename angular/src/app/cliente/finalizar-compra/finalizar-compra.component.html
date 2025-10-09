@@ -1,0 +1,202 @@
+<div class="container top-20 mb-2">
+  <h1 class="display-4 mb-2 text-center fw-bold titulos-Primary">Resumen de tu compra</h1>
+  <p class="text-center text-muted fs-5 mb-4">Verifica los productos y elige cómo finalizar tu compra</p>
+  <div *ngIf="carrito.length > 0; else sinProductos">
+    <div class="row">
+      <!-- 🛒 Productos a la izquierda -->
+      <div class="col-md-8">
+        <div class="card mb-4 shadow-sm" *ngFor="let item of carrito">
+          <div
+            class="card-body d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+
+            <!-- Imagen + Detalles del producto -->
+            <div class="d-flex align-items-start">
+              <ng-container *ngIf="item.producto.base64Img; else imagenLocal">
+                <img [src]="'data:image/png;base64,' + item.producto.base64Img" alt="Producto" width="80" height="80"
+                  class="rounded me-3 object-fit-cover border" />
+              </ng-container>
+              <ng-template #imagenLocal>
+                <img [src]="'assets/productos/P' + item.producto.idProducto + '.jpg'" (error)="onImageError($event)"
+                  alt="Producto" width="80" height="80" class="rounded me-3 object-fit-cover border" />
+              </ng-template>
+
+              <div>
+                <h5 class="fw-semibold mb-1">{{ item.producto.nombre }}</h5>
+                <p class="mb-1">Precio Unitario: <strong>S/. {{ item.producto.precio | number:'1.2-2' }}</strong></p>
+                <p class="mb-1">Subtotal: <strong>S/. {{ item.subTotal | number:'1.2-2' }}</strong></p>
+              </div>
+            </div>
+
+            <!-- Controles de cantidad -->
+            <div class="d-flex align-items-center justify-content-center gap-3 mt-3 mt-md-0">
+              <button class="btn btn-outline-secondary btn-sm" (click)="disminuirCantidad(item.producto.idProducto!)">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="fs-5 fw-bold">{{ item.cantidad }}</span>
+              <button class="btn btn-outline-secondary btn-sm" (click)="aumentarCantidad(item.producto.idProducto!)">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 💰 Total y botón de pago a la derecha -->
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="fw-bold text-black text-end">Total:</h4>
+            <h2 class="titulos-Primary fw-bold text-end">S/. {{ total | number:'1.2-2' }}</h2>
+            <button class="btn btn-primary-custom w-100 mt-4 " (click)="abrirModalPago()">
+              <i class="fas fa-credit-card me-2"></i> Confirmar y pagar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-template #sinProductos>
+    <div class="text-center py-5 rounded ">
+      <i class="fas fa-box-open fa-3x text-secondary mb-3"></i>
+      <h5 class="text-dark mb-2">Tu carrito está vacío</h5>
+      <p class="text-muted mb-4">Aún no has agregado productos al carrito.</p>
+      <button (click)="irProducto()" class="btn btn-primary-custom">
+        <i class="fas fa-store me-2"></i> Explorar Productos
+      </button>
+    </div>
+  </ng-template>
+
+</div>
+
+<!-- Modal Pago -->
+<div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <form (ngSubmit)="realizarPago()" #formPago="ngForm" class="bg-color-custom">
+
+        <!-- Encabezado -->
+        <div class="modal-header bg-color-primary text-white">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="modalPagoLabel">
+            <i class="bi bi-credit-card-2-front-fill fs-4"></i> Confirmar método de pago
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <!-- Cuerpo -->
+        <div class="modal-body px-4 py-4" [ngClass]="{'scrollable-content': metodoPago === 'R'}">
+          <!-- Información del usuario -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="nombre" class="form-label fw-semibold color-gray-900">Nombre</label>
+              <input type="text" class="form-control" id="nombre" [value]="usuario?.nombres" readonly />
+            </div>
+            <div class="col-md-6">
+              <label for="correo" class="form-label fw-semibold color-gray-900">Correo</label>
+              <input type="email" class="form-control" id="correo" [value]="usuario?.correo" readonly />
+            </div>
+            <div class="col-md-8">
+              <label for="direccion" class="form-label fw-semibold color-gray-900">Dirección de entrega</label>
+              <input type="text" class="form-control" id="direccion" [value]="usuario?.direccion" readonly />
+            </div>
+            <div class="col-md-4">
+              <label for="telefono" class="form-label fw-semibold color-gray-900">Teléfono</label>
+              <input type="text" class="form-control" id="telefono" [value]="usuario?.telefono" readonly />
+            </div>
+          </div>
+
+          <hr class="my-4" />
+
+          <!-- Método de pago -->
+          <h5 class="mb-3 titulos-Primary"><i class="bi bi-wallet2 me-2"></i>Opción de pago</h5>
+
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="payment" id="pagoEfectivo" value="P"
+              [(ngModel)]="metodoPago" required />
+            <label class="form-check-label" for="pagoEfectivo">
+              Retirar en tienda y pagar de forma presencial
+            </label>
+          </div>
+
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="radio" name="payment" id="pagoTarjeta" value="R"
+              [(ngModel)]="metodoPago" required />
+            <label class="form-check-label" for="pagoTarjeta">
+              Envío a domicilio y pagar con tarjeta débito/crédito
+            </label>
+          </div>
+
+<!-- Contenedor del mapa, solo se muestra si metodoPago === 'R' -->
+<div *ngIf="metodoPago === 'R'" class="mapa-container mt-3">
+  <google-map 
+    height="200px" 
+    width="100%" 
+    [center]="center" 
+    [zoom]="zoom"
+    (mapClick)="onMapClick($event)">
+    
+    <!-- Mostrar el marcador en el lugar donde se hace clic -->
+ <map-marker
+  #marker
+  *ngIf="lat && lng"
+  [position]="{ lat: lat, lng: lng }"
+  [options]="{ draggable: true }"
+  (mapDragEnd)="onMarkerDragEnd()">
+</map-marker>
+
+  </google-map>
+
+  <p *ngIf="lat && lng">Coordenadas seleccionadas: {{ lat }}, {{ lng }}</p>
+</div>
+
+
+          <!-- Datos tarjeta (condicional) -->
+          <div *ngIf="metodoPago === 'R'" class="mt-3 border rounded p-2 bg-light" style="font-size: 0.92rem;">
+            <div class="mb-3">
+              <label for="tarjetaNumber" class="form-label fw-semibold">Número de tarjeta</label>
+              <input type="text" id="tarjetaNumber" name="tarjetaNumber" class="form-control" maxlength="19"
+                placeholder="#### #### #### ####" [(ngModel)]="tarjeta.numero" (input)="formatearNumeroTarjeta()"
+                inputmode="numeric" pattern="[0-9 ]*" (keypress)="soloNumeros($event)" required />
+
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Mes</label>
+                <select name="mes" class="form-select" [(ngModel)]="tarjeta.mes" required>
+                  <option value="" disabled selected>Mes</option>
+                  <option *ngFor="let mes of meses" [value]="mes">{{ mes }}</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Año</label>
+                <select name="anio" class="form-select" [(ngModel)]="tarjeta.anio" required>
+                  <option value="" disabled selected>Año</option>
+                  <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="cvv" class="form-label fw-semibold">CVV</label>
+                <input type="tel" id="cvv" name="cvv" maxlength="3" class="form-control" placeholder="***"
+                  pattern="[0-9]{3}" inputmode="numeric" (keypress)="soloNumeros($event)" [(ngModel)]="tarjeta.cvv"
+                  required />
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer bg-light border-top px-4 py-3">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary-custom" [disabled]="formPago.invalid">
+            <i class="bi bi-bag-check-fill me-1"></i> Confirmar Compra
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

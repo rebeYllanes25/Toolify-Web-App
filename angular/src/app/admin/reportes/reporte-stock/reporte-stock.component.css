@@ -1,0 +1,67 @@
+.filtros-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.tabla-productos {
+  width: 100%;
+}
+
+.stock-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 13px;
+  text-align: center;
+  min-width: 40px;
+}
+
+.filtros-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filtros-container label {
+  font-weight: 600;
+  color: #444;
+  margin-right: 0.5rem;
+}
+
+.filtros-container select {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: linear-gradient(145deg, #f9f9f9, #ececec);
+  font-size: 14px;
+  color: #333;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.filtros-container select:hover {
+  border-color: #888;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.filtros-container select:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 6px rgba(25, 118, 210, 0.5);
+}
+
+.filtros-container option {
+  padding: 10px;
+  background: #fff;
+  color: #333;
+}
+
+.filtros-container option:hover {
+  background: #1976d2;
+  color: #fff;
+}

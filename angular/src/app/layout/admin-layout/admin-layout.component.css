@@ -1,0 +1,87 @@
+a{
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: rgb(209, 206, 0);
+    transition: all 0.3s ease-in;
+}
+
+a:hover{
+    background-color: rgb(154, 0,209,0.1);
+}
+
+.containerReportes{
+    position: relative;
+    background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+    width: 100%;
+    min-height: 80px;
+    box-shadow: 4px,0px,20px,0px rgba(0,0,0,0,0.2);
+    display: flex;
+    justify-content:  center;
+    align-items:  center;
+}
+
+.containerReportes nav ul{
+    display: flex;
+    gap: 10px;
+    list-style: none;
+}
+
+.containerReportes nav a i{
+    font-size: 14;
+    margin-left: 6px;
+
+}
+.submenu{
+    position: absolute;
+     left: 0;
+    width: 100%;
+    top: 100%;
+    background-color: aqua;
+    background-color: brown;
+    box-shadow: 4px,4px,20px,0px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    max-height: 0px;
+    transition: max-height 0.4s ease; 
+    overflow: hidden;
+     z-index: 10;
+}
+.submenu.show{
+    max-height: 300px;
+}
+
+.submenu ul li{
+position: relative;
+   display: block; 
+   width: 100%; 
+}
+.submenu ul li a {
+    width: 100%;
+}
+
+.open_submenu {
+  position: relative;
+}
+
+.flat{
+    color: #000;
+    border-radius: 28px;
+    background: #e0e0e0;
+    box-shadow: inset 7px 7px 14px #8b8b8b, inset -7px -7px 14px #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    height: 40px;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+
+#containerDashboar{
+    background-color: #e0e0e0  !important;
+    height: max-content !important;
+}

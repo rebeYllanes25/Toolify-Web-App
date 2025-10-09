@@ -1,0 +1,8 @@
+1. Ejecutar este comando en un query:
+	CREATE DATABASE BD_TOOLIFY;
+
+2. Conectar a la base de datos directamente
+	Ve a Databases > BD_TOOLIFY
+	Haz clic derecho > Query Tool
+
+3. Ejecutar el resto del script

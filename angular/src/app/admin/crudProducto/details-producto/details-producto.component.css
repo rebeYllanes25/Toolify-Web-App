@@ -1,0 +1,35 @@
+.details-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 250px;
+      overflow: hidden;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 8px;
+      object-fit: contain;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .info-container {
+      width: 100%;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .info-container p {
+      margin: 0.3rem 0;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 4px;
+    }
+

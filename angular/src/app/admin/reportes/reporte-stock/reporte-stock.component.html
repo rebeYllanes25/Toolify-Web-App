@@ -1,0 +1,80 @@
+<div class="filtros-container">
+<label>Categorias:</label>
+    <select [ngModel]="categoriaSeleccionada" (ngModelChange)="onChangeCategoria($event)">
+        <option [ngValue]="undefined">--SELECCIONE--</option>
+        <option *ngFor="let cat of categoria" [ngValue]="cat.idCategoria">
+            {{cat.descripcion}}
+        </option>
+    </select>
+
+    <label>Orden:</label>
+    <select [(ngModel)]="orden" (change)="onChangeOrden()">
+        <option value="ASC">Ascendente</option>
+        <option value="DESC">Descendente</option>
+    </select>
+
+  <button class="btn btn-danger" (click)="generarPDF()">
+    Descargar PDF
+  </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 tabla-productos">
+
+  <!-- ID -->
+  <ng-container matColumnDef="idProducto">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let producto">{{ producto.idProducto }}</td>
+  </ng-container>
+
+  <!-- Nombre -->
+  <ng-container matColumnDef="nombre">
+    <th mat-header-cell *matHeaderCellDef>Nombre</th>
+    <td mat-cell *matCellDef="let producto">{{ producto.nombre }}</td>
+  </ng-container>
+
+  <!-- Descripción -->
+  <ng-container matColumnDef="descripcion">
+    <th mat-header-cell *matHeaderCellDef>Descripción</th>
+    <td mat-cell *matCellDef="let producto">{{ producto.descripcion }}</td>
+  </ng-container>
+
+  <!-- Proveedor -->
+  <ng-container matColumnDef="proveedor">
+    <th mat-header-cell *matHeaderCellDef>Proveedor</th>
+    <td mat-cell *matCellDef="let producto">{{ producto.proveedor.razonSocial }}</td>
+  </ng-container>
+
+  <!-- Categoría -->
+  <ng-container matColumnDef="categoria">
+    <th mat-header-cell *matHeaderCellDef>Categoría</th>
+    <td mat-cell *matCellDef="let producto">{{ producto.categoria.descripcion }}</td>
+  </ng-container>
+
+  <!-- Precio -->
+  <ng-container matColumnDef="precio">
+    <th mat-header-cell *matHeaderCellDef>Precio</th>
+    <td mat-cell *matCellDef="let producto">S/.{{ producto.precio }}</td>
+  </ng-container>
+
+  <!-- Stock -->
+  <ng-container matColumnDef="stock">
+    <th mat-header-cell *matHeaderCellDef>Stock</th>
+    <td mat-cell *matCellDef="let producto">
+      <span class="stock-chip">
+        {{ producto.stock }}
+      </span>
+    </td>
+  </ng-container>
+
+  <!-- Fecha -->
+  <ng-container matColumnDef="fechaRegistrado">
+    <th mat-header-cell *matHeaderCellDef>Fecha Registro</th>
+    <td mat-cell *matCellDef="let producto">{{ producto.fechaRegistrado | date:'dd/MM/yyyy HH:mm' }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons>
+</mat-paginator>

@@ -1,0 +1,21 @@
+<div class="app-container">
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Navbar inferior con Font Awesome -->
+  <nav class="app-navbar">
+    <a routerLink="/repartidor/pedidos" routerLinkActive="active">
+      <i class="fas fa-box"></i>
+      <span>Pedidos</span>
+    </a>
+    <a routerLink="/repartidor/inicio" routerLinkActive="active">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>Ubicación</span>
+    </a>
+    <a (click)="cerrarSesion()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Salir</span>
+    </a>
+  </nav>
+</div>

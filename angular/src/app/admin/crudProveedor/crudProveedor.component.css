@@ -1,0 +1,49 @@
+.proveedor-card {
+  padding: 1.6rem;
+  border-radius: 1.2rem;
+  background: #fdfdfd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+height: 80%;
+}
+
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.tabla-wrapper {
+  overflow-x: auto;
+}
+
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  font-weight: 600;
+  color: #444;
+  background: #f3f3f3; 
+}
+
+td, th {
+  padding: 0.8rem;
+  text-align: left;
+}
+
+mat-paginator {
+  align-self: flex-end;
+}

@@ -1,0 +1,74 @@
+<div class="container py-5 top-20">
+  <h1 class="display-4 fw-bold titulos-Primary mb-4">Mi Perfil</h1>
+  <p class="fs-5 text-muted mb-4">Consulta tus datos personales y el historial de tus compras en Toolify.</p>
+
+  <div class="card mb-5 shadow-sm" *ngIf="usuario">
+    <div class="card-body">
+      <h4 class="card-title fw-semibold">{{ usuario.nombres }}</h4>
+      <p class="card-text text-muted">{{ usuario.correo }}</p>
+    </div>
+  </div>
+
+  <h2 class="fw-bold mb-4 color-gray-500">Historial de Compras</h2>
+
+  <div *ngIf="ventas && ventas.length > 0; else sinCompras">
+    <div class="accordion" id="accordionVentas">
+      <div class="accordion-item shadow-sm mb-3 border-0" *ngFor="let venta of ventas; let i = index">
+        <h2 class="accordion-header" [id]="'headingVenta' + i">
+          <button class="accordion-button collapsed fw-semibold bg-color-custom" type="button" data-bs-toggle="collapse"
+            [attr.data-bs-target]="'#collapseVenta' + i" [attr.aria-controls]="'collapseVenta' + i">
+            Venta #{{ venta.idVenta }} — {{ venta.fechaRegistro | date: 'dd/MM/yyyy' }} — S/. {{ venta.total }}
+          </button>
+        </h2>
+        <div [id]="'collapseVenta' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'headingVenta' + i"
+          data-bs-parent="#accordionVentas">
+          <div class="accordion-body">
+            <p>
+              <strong>Estado:</strong>
+              {{ venta.estado === 'E' ? 'Entregado' :
+              venta.estado === 'P' ? 'Pendiente' :
+              venta.estado === 'T' ? 'Transportado' :
+              venta.estado === 'C' ? 'Cancelado' :
+              'Desconocido' }}
+            </p>
+            <p><strong>Tipo:</strong> {{ venta.tipoVenta === 'P' ? 'Presencial' : 'Remota' }}</p>
+
+            <div *ngIf="venta.detalles && venta.detalles.length > 0; else sinDetalles">
+              <table class="table table-bordered table-hover mt-3">
+                <thead class="table-light">
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of venta.detalles">
+                    <td>{{ item.nombreProducto}}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>S/. {{ item.subTotal }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <ng-template #sinDetalles>
+              <p class="text-muted">No hay detalles de productos para esta venta.</p>
+            </ng-template>
+
+            <button (click)="descargarPDF(venta.idVenta)" class="btn btn-primary mt-3">
+              Descargar comprobante PDF
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #sinCompras>
+    <div class="alert alert-info">
+      No tienes compras registradas.
+    </div>
+  </ng-template>
+</div>

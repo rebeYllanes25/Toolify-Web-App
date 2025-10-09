@@ -1,0 +1,10 @@
+/* estilos personalizados para los estados del badge */
+.badge-generado {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-entregado {
+  background-color: #21af1c;
+  color: #fff;      
+}

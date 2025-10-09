@@ -1,0 +1,118 @@
+/* Estilo del contenedor principal del header */
+header.navbar {
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
+  padding: 0.5rem 1rem;
+  z-index: 1030;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #606cac; /* Color solicitado */
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    stroke: #606cac; /* Icono mismo color que el texto */
+  }
+
+  &:hover {
+    color: #4f5a9d;
+    svg {
+      stroke: #4f5a9d;
+    }
+  }
+}
+
+/* Links del menú */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  color: #6c757d;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* Gris transparente */
+    color: #606cac;
+  }
+
+  &.active {
+    background-color: #606cac; /* Fondo activo */
+    color: #fff; /* Texto blanco */
+    font-weight: 600;
+
+    svg {
+      stroke: #fff; /* Iconos blancos en activo */
+    }
+  }
+}
+
+/* Botón hamburguesa */
+.navbar-toggler {
+  border: none;
+  background: transparent;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+/* Dropdown de usuario */
+.btn-personalizado {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  color: #495057;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Ancho uniforme para opciones del menú usuario */
+.btn-ancho {
+  min-width: 160px;
+}
+
+/* Dropdown */
+.dropdown-menu {
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  padding: 0.4rem 0;
+}
+
+/* SVGs dentro del menú */
+.nav-link svg,
+.btn-personalizado svg,
+.dropdown-item svg {
+  stroke: currentColor;
+}
+
+/* Alineación y separación de ítems del header */
+header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Modo responsive */
+@media (max-width: 992px) {
+  .navbar-collapse {
+    margin-top: 0.5rem;
+  }
+
+  .nav-link {
+    padding-left: 0;
+  }
+}

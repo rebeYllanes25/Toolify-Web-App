@@ -1,0 +1,27 @@
+<div class="map-container">
+  <google-map 
+    [center]="center" 
+    [zoom]="zoom" 
+    [height]="'100%'" 
+    [width]="'100%'">
+    
+    <!-- Marcadores -->
+    <ng-container *ngIf="markers.length > 0">
+      <map-marker *ngFor="let m of markers" [position]="m.position" [label]="m.label"></map-marker>
+    </ng-container>
+
+    <!-- Ruta en el mapa -->
+    <map-directions-renderer *ngIf="directions" [directions]="directions!"></map-directions-renderer>
+  </google-map>
+
+  <!-- Controles sobre el mapa -->
+  <div class="controls-overlay">
+    <ng-container *ngIf="pedidoSeleccionado && !simulandoRecorrido">
+      <button (click)="iniciarPedido(pedidoSeleccionado)">Iniciar Pedido</button>
+    </ng-container>
+
+    <ng-container *ngIf="simulandoRecorrido">
+      <p>Entregando pedido...<br>Tiempo restante: {{ tiempoRestante }}s</p>
+    </ng-container>
+  </div>
+</div>

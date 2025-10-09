@@ -1,0 +1,85 @@
+.contenedorDashboar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; 
+  grid-template-rows: repeat(7, 200px);
+  padding: 1rem;
+  max-height: calc(93vh - 60px);
+  min-height: 600px;
+  overflow-y: auto;
+  gap: 1.2rem;
+  background: #f5f6fa;
+  border-radius: 20px;
+  scrollbar-width: none;
+}
+
+.contenedorDashboar::-webkit-scrollbar {
+  display: none;
+}
+
+.contenedorDashboar > * {
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 
+    0 4px 8px rgba(0,0,0,0.08),
+    0 2px 4px rgba(0,0,0,0.06);
+  padding: 1rem;
+  transition: transform 1.5s ease, box-shadow 0.2s ease;
+}
+
+.contenedorDashboar > *:hover {
+  transform: translateY(-6px);
+  cursor: pointer;
+  box-shadow: 
+    0 8px 16px rgba(0,0,0,0.12),
+    0 4px 8px rgba(0,0,0,0.1);
+    border: 1px solid black;
+  border-radius:  30px ; 
+}
+
+app-componente-uno {
+  grid-row: 3/5;
+  grid-column: 1/3;
+}
+
+app-componente-dos {
+  grid-row: 3/6;
+  grid-column: 3/4;
+}
+
+app-componente-tres {
+  grid-row: 5/8;
+  grid-column: 1/2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+app-componente-cuatro {
+  grid-row: 5/8;
+  grid-column: 2/3;
+}
+
+app-componente-cinco {
+  grid-row: 1/3;
+  grid-column: 1/4;
+}
+
+app-componente-uno {
+  background: linear-gradient(135deg, #f9f9f9, #eef1f5);
+}
+
+app-componente-dos {
+  background: linear-gradient(135deg, #fdfbfb, #ebedee);
+}
+
+app-componente-tres {
+  background: linear-gradient(135deg, #fefefe, #f2f3f7);
+}
+
+app-componente-cuatro {
+  background: linear-gradient(135deg, #f9fafc, #eceff4);
+}
+
+app-componente-cinco {
+  background: linear-gradient(135deg, #fdfdfd, #f1f1f1);
+}

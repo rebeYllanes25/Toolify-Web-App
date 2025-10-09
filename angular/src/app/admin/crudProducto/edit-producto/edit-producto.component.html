@@ -1,0 +1,55 @@
+<mat-card class="card-form">
+  <h2 class="titulo-form"> Editar Producto</h2>
+
+  <form (ngSubmit)="actualizarProducto()" class="form-producto">
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>ID</mat-label>
+      <input matInput [(ngModel)]="producto.idProducto" name="idProducto" readonly />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Nombre</mat-label>
+      <input matInput [(ngModel)]="producto.nombre" name="nombre" required />
+    </mat-form-field>
+
+    <div class="img-preview">
+      <label> Imagen actual</label>
+      <img class="img-thumbnail" [src]="'data:image/jpeg;base64,' + producto.base64Img" alt="Producto" />
+    </div>
+
+    <div class="file-upload">
+      <label for="fileInput">Subir nueva imagen</label>
+      <input id="fileInput" type="file" name="imagen" (change)="onFileSelect($event)" />
+    </div>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput [(ngModel)]="producto.descripcion" name="descripcion" required></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Proveedor (ID)</mat-label>
+      <input matInput type="number" [(ngModel)]="producto.proveedor.idProveedor" name="proveedor" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Categoría (ID)</mat-label>
+      <input matInput type="number" [(ngModel)]="producto.categoria.idCategoria" name="categoria" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Precio</mat-label>
+      <input matInput type="number" [(ngModel)]="producto.precio" name="precio" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Stock</mat-label>
+      <input matInput type="number" [(ngModel)]="producto.stock" name="stock" required />
+    </mat-form-field>
+
+    <div class="acciones">
+      <button mat-raised-button color="primary" type="submit"> Actualizar</button>
+    </div>
+  </form>
+</mat-card>

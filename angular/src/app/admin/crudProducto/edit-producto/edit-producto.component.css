@@ -1,0 +1,90 @@
+.card-form {
+  padding: 30px;
+  margin: 30px auto;
+  max-width: 750px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow-y: auto;
+  height: 800px !important;
+}
+
+.titulo-form {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #2196f3;
+}
+
+.form-producto {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 25px;
+}
+
+.w-full, 
+.img-preview, 
+.file-upload, 
+.acciones {
+  grid-column: span 2;
+}
+
+.img-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.img-preview img {
+  max-width: 200px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.img-preview img:hover {
+  transform: scale(1.05);
+}
+
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.file-upload label {
+  font-weight: 600;
+  color: #444;
+  font-size: 14px;
+}
+
+.file-upload input[type="file"] {
+  padding: 10px;
+  border: 2px dashed #2196f3;
+  border-radius: 10px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.file-upload input[type="file"]:hover {
+  background: #e3f2fd;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.acciones button {
+  padding: 10px 24px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+.acciones button:hover {
+  transform: scale(1.05);
+}

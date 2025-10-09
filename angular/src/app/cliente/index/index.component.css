@@ -1,0 +1,99 @@
+.custom-section {
+  padding-top: 5rem;  /* pt-20 = 80px aprox */
+  padding-bottom: 3rem; /* pb-12 = 48px aprox */
+  background: linear-gradient(to bottom, #f9fafb, #ffffff);
+}
+
+.custom-title {
+  font-size: 2.25rem; /* 4xl = 36px */
+  line-height: 1.2;
+  font-weight: 700;
+  color: #1f2937; /* gray-900 */
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .custom-title {
+    font-size: 4.3rem; /* 6xl = 60px */
+  }
+}
+
+.text-primary-custom {
+  color: #576EAA;
+}
+
+.custom-paragraph {
+  font-size: 1.4rem; /* xl */
+  color: var(--color-gray-600); /* gray-600 */
+  max-width: 48rem; /* max-w-3xl = 768px */
+  margin-bottom: 2rem;
+}
+
+.btn-primary-custom {
+  background-color: #576EAA;
+  border-color: #576EAA;
+  color: white;
+  font-weight: 500;
+  padding: 1.2rem 2rem !important;
+  font-size: 1.3rem; /* lg = 18px */
+  border-radius: 0.375rem; /* rounded-md = 6px */
+  height: 2.25rem; /* h-9 = 36px approx */
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary-custom:hover,
+.btn-primary-custom:focus {
+  background-color: #4a5d94;
+  border-color: #4a5d94;
+  color: white;
+  box-shadow: 0 0 8px rgba(74, 93, 148, 0.5);
+}
+
+.btn-outline-primary-custom {
+  color: #576EAA;
+  border-color: #576EAA;
+  font-weight: 500;
+  padding: 1.2rem 2rem !important;
+  font-size: 1.3rem;
+  border-radius: 0.375rem;
+  height: 2.25rem;
+  background-color: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline-primary-custom:hover,
+.btn-outline-primary-custom:focus {
+  background-color: #576EAA;
+  color: white;
+  border-color: #576EAA;
+  box-shadow: 0 0 8px rgba(87, 110, 170, 0.5);
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.section-servicio{
+    width:64px;
+     height:64px;
+}
+.carousel-indicators.custom-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: none;
+  margin: 0 6px;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.carousel-indicators.custom-indicators button.active {
+  background-color: #ffffff;
+  transform: scale(1.2);
+}
+
+.carousel-indicators.custom-indicators button:hover {
+  background-color: #ffffff;
+  opacity: 0.9;
+}

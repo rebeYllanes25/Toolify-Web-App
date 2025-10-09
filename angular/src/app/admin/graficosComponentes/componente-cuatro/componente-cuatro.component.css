@@ -1,0 +1,9 @@
+.radarChartContainer{
+    position: relative;
+    height: max-content;
+}
+
+#radarChart{
+    height: 350px;
+    width: 60%;
+}

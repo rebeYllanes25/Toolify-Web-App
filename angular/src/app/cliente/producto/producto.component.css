@@ -1,0 +1,79 @@
+.btn-primary-custom {
+  background-color: #576EAA;
+  border-color: #576EAA;
+  color: white;
+  font-weight: 500;
+  border-radius: 0.375rem; /* rounded-md = 6px */
+  height: 2.25rem; /* h-9 = 36px approx */
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary-custom:hover,
+.btn-primary-custom:focus {
+  background-color: #4a5d94;
+  border-color: #4a5d94;
+  color: white;
+  box-shadow: 0 0 8px rgba(74, 93, 148, 0.5);
+}
+
+.btn-outline-secondary:hover{
+background-color: var(--color-gray-100);
+color:#6c757d;
+}
+
+.custom-col {
+  width: 100%; /* por defecto 1 por fila */
+}
+
+@media (min-width: 600px) {
+  .custom-col {
+    width: 50%; /* 2 por fila */
+  }
+}
+
+@media (min-width: 1100px) {
+  .custom-col {
+    width: 33.3333%; /* 3 por fila a partir de 1100px */
+  }
+}
+
+.pagination-lg .page-link {
+  width: 42px;
+  height: 42px;
+  line-height: 40px;
+  padding: 0;
+  border-radius: 50%; /* Redondear al máximo (círculo) */
+  font-size: 1.1rem;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: #212529;
+  border: 1.5px solid transparent;
+}
+
+.pagination-lg .page-item.active .page-link {
+  background-color: var(--color-primary-dark);/* Cambia este color por el de tu carrito, ej: #576eaa o .btn-primary-custom */
+  border-color: var(--color-primary-dark);
+  color: white;
+  font-weight: 600;
+}
+
+.pagination-lg .page-link:hover:not(:disabled):not(.active) {
+  background-color: var(--color-primary); /* Un tono más claro del color custom para hover */
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.page-item.disabled .page-link {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Opcional: para que las flechas estén centradas y redondas igual */
+.pagination-lg .page-link span {
+  display: inline-block;
+  line-height: normal;
+}
+.pagination-lg .page-link:focus {
+  outline: none;
+  box-shadow: none;
+}

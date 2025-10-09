@@ -1,0 +1,67 @@
+<div class="containerFiltros">
+    <div class="containerFechas">
+        <div class="containerFechaInicio">
+            <label>Fecha Inicio</label>
+            <input type="date" [(ngModel)]="fechaInicio" (change)="onChangeFechas()">
+        </div>
+        <div class="containerFechaFin">
+            <label>Fecha Fin</label>
+            <input type="date" [(ngModel)]="fechaFin" (change)="onChangeFechas()">
+        </div>
+    </div>
+    <div>
+        <label>Orden:</label>
+        <select [(ngModel)]="tipoVenta" (change)="onChangeTipoVenta()">
+            <option [ngValue]="undefined">Tipo de Venta</option>
+            <option value="P">Presencial</option>
+            <option value="R">Remota</option>
+        </select>
+    </div>
+
+     <div>
+      <button (click)="generarPDF()">Descargar PDF</button>
+    </div>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="idVenta">
+        <th mat-header-cell *matHeaderCellDef>ID Venta</th>
+        <td mat-cell *matCellDef="let v">{{ v.idVenta }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombresCompletos">
+        <th mat-header-cell *matHeaderCellDef>Nombres User</th>
+        <td mat-cell *matCellDef="let v">{{ v.nombresCompletos }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="direccionUser">
+        <th mat-header-cell *matHeaderCellDef>Direccion User</th>
+        <td mat-cell *matCellDef="let v">{{ v.direccionUser }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>Precio Total</th>
+        <td mat-cell *matCellDef="let v">{{ v.total }}</td>
+    </ng-container>
+
+        <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let v">{{ v.estado }}</td>
+    </ng-container>
+        <ng-container matColumnDef="tipoVenta">
+        <th mat-header-cell *matHeaderCellDef>Tipo De Venta</th>
+        <td mat-cell *matCellDef="let v">{{ v.tipoVenta }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef>Fecha Generado</th>
+        <td mat-cell *matCellDef="let v">{{ v.fecha }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+</table>
+  <mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons
+    aria-label="Select page of periodic elements">
+  </mat-paginator>

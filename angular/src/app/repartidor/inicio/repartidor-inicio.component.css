@@ -1,0 +1,44 @@
+/* Ocupa todo el espacio posible */
+.map-container {
+  position: relative;
+  height: 100vh; /* O usa 100% si estás dentro de otro contenedor */
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Overlay flotante */
+.controls-overlay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  max-width: 250px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 15px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #155a9a;
+}
+
+.controls-overlay p {
+  margin: 0;
+  font-weight: bold;
+  color: #333;
+}

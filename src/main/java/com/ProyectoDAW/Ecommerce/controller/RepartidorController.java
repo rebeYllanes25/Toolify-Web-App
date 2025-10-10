@@ -4,11 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.service.PedidoService;
@@ -18,20 +14,36 @@ import com.ProyectoDAW.Ecommerce.service.PedidoService;
 public class RepartidorController {
 
     @Autowired
-    PedidoService pedidoService;
-	
-    @GetMapping("/pedidos")
+    private PedidoService pedidoService;
+
+    @GetMapping("/pendientes")
     public ResponseEntity<List<PedidoDTO>> listarPedidosPendientes() {
         List<PedidoDTO> pedidos = pedidoService.listarPedidosPendientes();
         return ResponseEntity.ok(pedidos);
     }
 
-    
-    /*
-    @PutMapping("/marcar-entregado/{idVenta}")
-    public ResponseEntity<?> marcarVentaComoEntregada(@PathVariable Integer idVenta) {
-        ventaService.marcarComoEntregado(idVenta);
-        return ResponseEntity.ok("Venta marcada como entregada");
+    @PutMapping("/asignar/{idPedido}")
+    public ResponseEntity<PedidoDTO> registrarRepartidor(
+            @PathVariable Integer idPedido,
+            @RequestParam Integer idRepartidor) {
+        PedidoDTO pedido = pedidoService.registrarRepartidor(idPedido, idRepartidor);
+        return ResponseEntity.ok(pedido);
     }
-    */
+
+    @PutMapping("/{idPedido}/estado")
+    public ResponseEntity<PedidoDTO> actualizarEstado(
+            @PathVariable Integer idPedido,
+            @RequestParam String estado) {
+        PedidoDTO pedido = pedidoService.actualizarEstado(idPedido, estado);
+        return ResponseEntity.ok(pedido);
+    }
+
+    @PutMapping("/entregar/{idPedido}")
+    public ResponseEntity<PedidoDTO> verificarEntrega(
+            @PathVariable Integer idPedido,
+            @RequestParam String codigoQR,
+            @RequestParam Integer idRepartidor) {
+        PedidoDTO pedido = pedidoService.verificarEntrega(codigoQR, idRepartidor);
+        return ResponseEntity.ok(pedido);
+    }
 }

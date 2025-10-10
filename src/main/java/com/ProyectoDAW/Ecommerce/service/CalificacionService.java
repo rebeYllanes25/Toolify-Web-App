@@ -27,8 +27,10 @@ public class CalificacionService {
                 .orElseThrow(() -> new RuntimeException("Calificacion no encontrado con ID: " + idCalificacion));
     }
 
+
+    // creamos el registro en la bd sin comentarios ni puntaje
     @Transactional
-    public void registrarCalificacion (Pedido pedido) {
+    public void crearRegistroCalificacion (Pedido pedido) {
         if (calificacionRepository.existsByPedidoIdPedido(pedido.getIdPedido())) {
             return;
         }
@@ -41,6 +43,7 @@ public class CalificacionService {
         calificacionRepository.save(calificacion);
     }
 
+    // seteamos el comentario y puntaje del cliente
     @Transactional
     public CalificacionDTO registrarCalificacion(Integer idPedido, Short puntuacion, String comentario) {
 

@@ -5,6 +5,7 @@ import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
+import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
 import com.ProyectoDAW.Ecommerce.util.mappers.PedidoMapper;
 import jakarta.transaction.Transactional;
@@ -27,6 +28,9 @@ public class PedidoService {
     @Autowired
     private CalificacionService calificacionService;
 
+    @Autowired
+    private IUsuarioRepository usuarioRepository;
+
     private Pedido getPedidoById(Integer idPedido) {
         return pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + idPedido));
@@ -34,7 +38,13 @@ public class PedidoService {
 
     @Transactional
     public List<PedidoDTO> listarPedidosPendientes() {
-        List<Pedido> pedidos = pedidoRepository.listarPedidosPendientes();
+        List<Pedido> pedidos = pedidoRepository.listarPedidosPorEstado("PE");
+        return pedidos.stream().map(PedidoMapper::toDTO).toList();
+    }
+
+    @Transactional
+    public List<PedidoDTO> listarPedidosPorClienteYEstado(Integer idCliente, String estado) {
+        List<Pedido> pedidos = pedidoRepository.listarPedidosPorClienteYEstado(idCliente, estado);
         return pedidos.stream().map(PedidoMapper::toDTO).toList();
     }
 
@@ -47,18 +57,22 @@ public class PedidoService {
         }
 
         Pedido pedidoActualizado = getPedidoById(idPedido);
+        
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 
     @Transactional
     public PedidoDTO registrarRepartidor(Integer idPedido, Integer idRepartidor) {
-        int exito = pedidoRepository.registrarRepartidor(idPedido, idRepartidor);
-
-        if (exito == 0) {
-            throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido +
-                    " o el repartidor con ID: " + idRepartidor + "no existe");
+        if (!usuarioRepository.existsById(idRepartidor)) {
+            throw new RuntimeException("Error: El repartidor con ID " + idRepartidor + " no existe.");
         }
 
+        int exito = pedidoRepository.registrarRepartidor(idPedido, idRepartidor);
+        int exito2 = pedidoRepository.actualizarEstado(idPedido, "AS");
+
+        if (exito == 0 || exito2 == 0) {
+            throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido + " para asignar el repartidor.");
+        }
         Pedido pedidoActualizado = getPedidoById(idPedido);
         return PedidoMapper.toDTO(pedidoActualizado);
     }
@@ -71,7 +85,6 @@ public class PedidoService {
     @Transactional
     public PedidoDTO verificarEntrega(String codigoQR, Integer idRepartidor) {
 
-        // 1. Buscar los pedidos que coincidan con el código QR
         List<Pedido> pedidos = pedidoRepository.findByQrVerificacion(codigoQR);
 
         if (pedidos.isEmpty()) {
@@ -102,7 +115,7 @@ public class PedidoService {
         venta.setEstado("E");
         ventaRepository.save(venta);
 
-        calificacionService.registrarCalificacion(pedido);
+        calificacionService.crearRegistroCalificacion(pedido);
 
         return PedidoMapper.toDTO(pedido);
     }

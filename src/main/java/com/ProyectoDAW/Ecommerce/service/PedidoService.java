@@ -5,7 +5,9 @@ import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
+import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
+import com.ProyectoDAW.Ecommerce.util.mappers.PedidoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,55 +20,103 @@ import java.util.stream.Collectors;
 public class PedidoService {
 
     @Autowired
-    IPedidoRepository pedidoRepository;
+    private IPedidoRepository pedidoRepository;
 
     @Autowired
-    IVentaRepository ventaRepository;
+    private IVentaRepository ventaRepository;
 
-    
-    @Transactional
-    public List<PedidoDTO> listarPedidosPendientes() {
-        List<Pedido> pedidos = pedidoRepository.listarPedidosPendientes();
+    @Autowired
+    private CalificacionService calificacionService;
 
-        return pedidos.stream().map(p -> {
-            Venta v = p.getVenta();
+    @Autowired
+    private IUsuarioRepository usuarioRepository;
 
-            return new PedidoDTO(
-                v.getIdVenta(),
-                p.getNumPedido(),
-                v.getUsuario().getIdUsuario(),
-                v.getUsuario().getNombres(),
-                p.getFecha(),
-                v.getTotal(),
-                p.getDireccionEntrega(),
-                p.getLatitud(),
-                p.getLongitud(),
-                v.getDetalles().stream()
-                    .map(d -> new DetalleVentaDTO(
-                        d.getIdDetalleVenta(),
-                        d.getProducto().getIdProducto(),
-                        d.getProducto().getNombre(),
-                        d.getProducto().getDescripcion(),
-                        d.getProducto().getBase64Img(),                        
-                        d.getProducto().getPrecio(),
-                        d.getCantidad(),
-                        d.getSubTotal()
-                    ))
-                    .toList(),
-                p.getRepartidor() != null ? p.getRepartidor().getIdUsuario() : null,
-                p.getRepartidor() != null ? p.getRepartidor().getNombres() : null,
-                v.getEspecificaciones(),
-                p.getEstado()
-            );
-        }).toList();
+    private Pedido getPedidoById(Integer idPedido) {
+        return pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + idPedido));
     }
 
+    @Transactional
+    public List<PedidoDTO> listarPedidosPendientes() {
+        List<Pedido> pedidos = pedidoRepository.listarPedidosPorEstado("PE");
+        return pedidos.stream().map(PedidoMapper::toDTO).toList();
+    }
 
-    /*
-     * @Transactional public ResultadoResponse actualizarEstado(Integer idVenta,
-     * String estado) { Venta venta = ventaRepository.findById(idVenta)
-     * .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
-     * venta.setEstado(estado); ventaRepository.save(venta); return new
-     * ResultadoResponse(true, "Estado actualizado"); }
-     */
+    @Transactional
+    public List<PedidoDTO> listarPedidosPorClienteYEstado(Integer idCliente, String estado) {
+        List<Pedido> pedidos = pedidoRepository.listarPedidosPorClienteYEstado(idCliente, estado);
+        return pedidos.stream().map(PedidoMapper::toDTO).toList();
+    }
+
+    @Transactional
+    public PedidoDTO actualizarEstado(Integer idPedido, String estado) {
+        int filas = pedidoRepository.actualizarEstado(idPedido, estado);
+
+        if (filas == 0) {
+            throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido + " o el estado ya era " + estado + ".");
+        }
+
+        Pedido pedidoActualizado = getPedidoById(idPedido);
+        
+        return PedidoMapper.toDTO(pedidoActualizado);
+    }
+
+    @Transactional
+    public PedidoDTO registrarRepartidor(Integer idPedido, Integer idRepartidor) {
+        if (!usuarioRepository.existsById(idRepartidor)) {
+            throw new RuntimeException("Error: El repartidor con ID " + idRepartidor + " no existe.");
+        }
+
+        int exito = pedidoRepository.registrarRepartidor(idPedido, idRepartidor);
+        int exito2 = pedidoRepository.actualizarEstado(idPedido, "AS");
+
+        if (exito == 0 || exito2 == 0) {
+            throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido + " para asignar el repartidor.");
+        }
+        Pedido pedidoActualizado = getPedidoById(idPedido);
+        return PedidoMapper.toDTO(pedidoActualizado);
+    }
+
+    public PedidoDTO buscarPedidoPorId(Integer idPedido) {
+        Pedido pedido = getPedidoById(idPedido);
+        return PedidoMapper.toDTO(pedido);
+    }
+
+    @Transactional
+    public PedidoDTO verificarEntrega(String codigoQR, Integer idRepartidor) {
+
+        List<Pedido> pedidos = pedidoRepository.findByQrVerificacion(codigoQR);
+
+        if (pedidos.isEmpty()) {
+            throw new RuntimeException("Error: No se encontró ningún pedido con el código QR proporcionado.");
+        }
+
+        if (pedidos.size() > 1) {
+            pedidos = pedidos.stream()
+                    .filter(p -> p.getRepartidor() != null && p.getRepartidor().getIdUsuario().equals(idRepartidor))
+                    .toList();
+
+            if (pedidos.isEmpty()) {
+                throw new RuntimeException("Error: Múltiples pedidos con el mismo QR. " +
+                        "No se encontró ninguna coincidencia con el ID de repartidor: " + idRepartidor);
+            }
+        }
+
+        Pedido pedido = pedidos.get(0);
+
+        if (pedido.getRepartidor() == null || !pedido.getRepartidor().getIdUsuario().equals(idRepartidor)) {
+            throw new RuntimeException("Error: El pedido no está asignado a este repartidor.");
+        }
+
+        pedido.setEstado("EN");
+        pedidoRepository.save(pedido);
+
+        Venta venta = pedido.getVenta();
+        venta.setEstado("E");
+        ventaRepository.save(venta);
+
+        calificacionService.crearRegistroCalificacion(pedido);
+
+        return PedidoMapper.toDTO(pedido);
+    }
 }

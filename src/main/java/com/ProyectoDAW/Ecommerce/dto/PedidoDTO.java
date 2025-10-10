@@ -15,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PedidoDTO {
     private Integer idVenta;
+    private Integer idPedido;
     private String numPedido;
     private Integer idCliente;
     private String nomCliente;

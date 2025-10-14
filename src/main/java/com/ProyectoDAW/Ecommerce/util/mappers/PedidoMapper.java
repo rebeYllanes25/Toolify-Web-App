@@ -43,6 +43,7 @@ public class PedidoMapper {
                 p.getDireccionEntrega(),
                 p.getLatitud(),
                 p.getLongitud(),
+                p.getMovilidad(),
                 detallesDTO,
                 p.getRepartidor() != null ? p.getRepartidor().getIdUsuario() : null,
                 p.getRepartidor() != null ? p.getRepartidor().getNombres() : null,

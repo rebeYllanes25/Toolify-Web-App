@@ -104,7 +104,7 @@
               <label for="telefono" class="form-label fw-semibold color-gray-900">Teléfono</label>
               <input type="text" class="form-control" id="telefono" [value]="usuario?.telefono" readonly />
             </div>
-            <div class="col-md-4">
+            <div class="col-md-12">
               <label for="especificaciones" class="form-label fw-semibold color-gray-900">Especificaciones</label>
               <input type="text" class="form-control" id="especificaciones" name="especificaciones" [(ngModel)]="especificaciones" />            
             </div>
@@ -133,30 +133,48 @@
             </label>
           </div>
 
-<!-- Contenedor del mapa, solo se muestra si metodoEntrega === 'D' -->
-<div *ngIf="metodoEntrega === 'D'" class="mapa-container mt-3">
-  <google-map 
-    height="200px" 
-    width="100%" 
-    [center]="center" 
-    [zoom]="zoom"
-    (mapClick)="onMapClick($event)">
-    
-    <!-- Mostrar el marcador en el lugar donde se hace clic -->
- <map-marker
-  #marker
-  *ngIf="lat && lng"
-  [position]="{ lat: lat, lng: lng }"
-  [options]="{ draggable: true }"
-  (mapDragEnd)="onMarkerDragEnd()">
-</map-marker>
+          <!-- Contenedor del mapa, solo se muestra si metodoEntrega === 'D' -->
+          <div *ngIf="metodoEntrega === 'D'" class="mapa-container mt-3">
+            <google-map 
+              height="200px" 
+              width="100%" 
+              [center]="center" 
+              [zoom]="zoom"
+              (mapClick)="onMapClick($event)">
+              
+              <!-- Mostrar el marcador en el lugar donde se hace clic -->
+          <map-marker
+            #marker
+            *ngIf="lat && lng"
+            [position]="{ lat: lat, lng: lng }"
+            [options]="{ draggable: true }"
+            (mapDragEnd)="onMarkerDragEnd()">
+          </map-marker>
 
-  </google-map>
+            </google-map>
 
-  <p *ngIf="lat && lng">Coordenadas seleccionadas: {{ lat }}, {{ lng }}</p>
-</div>
+            <p *ngIf="lat && lng">Coordenadas seleccionadas: {{ lat }}, {{ lng }}</p>
+          </div>
+          
+          <div *ngIf="metodoEntrega === 'D'" class="mt-3 border rounded p-2 bg-light" style="font-size: 0.92rem;">
+            <h5 class="mb-3 titulos-Primary"><i class="bi bi-box me-2"></i>Tipo de Delivery</h5>
 
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="movilidad" id="normal" value="M" [(ngModel)]="movilidad"
+                (change)="onMovilidadChange()" required />
+              <label class="form-check-label" for="normal">
+                Servicio de entrega con normalidad (Costo extra de S/ 10)
+              </label>
+            </div>
 
+            <div class="form-check mb-4">
+              <input class="form-check-input" type="radio" name="movilidad" id="urgente" value="A" [(ngModel)]="movilidad"
+                (change)="onMovilidadChange()" required />
+              <label class="form-check-label" for="urgente">
+                Servicio de entrega con urgencia (Costo extra de S/ 15)
+              </label>
+            </div>
+          </div>
           <!-- Datos tarjeta (condicional) -->
           <div *ngIf="metodoEntrega === 'D'" class="mt-3 border rounded p-2 bg-light" style="font-size: 0.92rem;">
             <div class="mb-3">

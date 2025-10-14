@@ -30,7 +30,8 @@ export class FinalizarCompraComponent implements OnInit {
   lat: number | null = null;
   lng: number | null = null;
   especificaciones: String = '';
-  direccionObtenida: string = ''; // Nueva propiedad
+  direccionObtenida: string = '';
+  movilidad: String = '';
 
   @ViewChild('marker') marker!: MapMarker;
 
@@ -55,7 +56,7 @@ export class FinalizarCompraComponent implements OnInit {
   ngOnInit(): void {
     this.carritoService.getCarritoObservable().subscribe((items) => {
       this.carrito = items;
-      this.total = this.carritoService.getTotal();
+      this.calcularTotal();
     });
 
     if (this.authService.isLoggedIn()) {
@@ -128,6 +129,19 @@ export class FinalizarCompraComponent implements OnInit {
     });
 }
 
+  calcularTotal(): void {
+    this.total = this.carritoService.getTotal();
+    
+    if (this.metodoEntrega === 'D' && this.movilidad === 'M') {
+      this.total += 10;
+    } else if (this.metodoEntrega === 'D' && this.movilidad === 'A') {
+      this.total += 15;
+    }
+  }
+
+  onMovilidadChange(): void {
+    this.calcularTotal();
+  }
 
   aumentarCantidad(idProducto: number) {
     try {
@@ -171,10 +185,13 @@ export class FinalizarCompraComponent implements OnInit {
       pedido: {
         direccionEntrega: this.metodoEntrega === 'D' ? this.direccionObtenida : null,
         latitud: this.metodoEntrega === 'D' ? this.lat : null,
-        longitud: this.metodoEntrega === 'D' ? this.lng : null
+        longitud: this.metodoEntrega === 'D' ? this.lng : null,
+        movilidad: this.movilidad
       },
       especificaciones: this.especificaciones
     };
+
+    console.log(ventaParaBackend);
 
     this.compraService.guardarVentaDelivery(ventaParaBackend).subscribe({
       next: response => {

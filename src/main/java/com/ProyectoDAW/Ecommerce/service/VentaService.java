@@ -126,6 +126,8 @@ public class VentaService {
 
                 Pedido pedido = venta.getPedido();
                 pedido.setVenta(venta);
+                pedido.setLatitud(venta.getPedido().getLatitud());
+                pedido.setLongitud(venta.getPedido().getLongitud());
                 pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
                 pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
                 pedido.setEstado("PE");
@@ -189,6 +191,8 @@ public class VentaService {
 
                 Pedido pedido = venta.getPedido();
                 pedido.setVenta(venta);
+                pedido.setLatitud(venta.getPedido().getLatitud());
+                pedido.setLongitud(venta.getPedido().getLongitud());
                 pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
                 pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
                 pedido.setEstado("PE");

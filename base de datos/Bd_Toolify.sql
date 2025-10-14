@@ -155,10 +155,20 @@ INSERT INTO TB_ROL (DESCRIPCION) VALUES
 
 INSERT INTO TB_USUARIO (NOMBRES, APE_PATERNO, APE_MATERNO, CORREO, CLAVE, NRO_DOC, DIRECCION, ID_DISTRITO, TELEFONO, ROL)
 VALUES
+-- Registros existentes
 ('Luis','Pérez','García','luis.perez@example.com','clave123','12345678','Av. Lima 123',1,'987654321',1),
 ('María','Ramírez','Lopez','maria.ramirez@example.com','clave123','23456789','Calle Real 456',2,'987654322',2),
 ('Juan','Gonzales','Meza','juan.gonzales@example.com','clave123','34567890','Jr. Perú 789',3,'987654323',3),
-('Ana','Torres','Díaz','ana.torres@example.com','clave123','45678901','Psje. Andino 012',4,'987654324',4);
+('Ana','Torres','Díaz','ana.torres@example.com','clave123','45678901','Psje. Andino 012',4,'987654324',4),
+
+-- Nuevos registros para completar 3 con rol 2 y 3 con rol 4
+('Carlos','Sánchez','Morales','carlos.sanchez@example.com','clave123','11223344','Av. Grau 789',3,'987654325',2),
+('Elena','Huerta','Campos','elena.huerta@example.com','clave123','22334455','Jr. Las Flores 321',4,'987654326',2),
+('Pedro','Mendoza','Cruz','pedro.mendoza@example.com','clave123','33445566','Av. Bolívar 987',2,'987654327',2),
+('Jorge','Rojas','Vega','jorge.rojas@example.com','clave123','44556677','Calle Central 654',1,'987654328',4),
+('Lucía','Campos','Reyes','lucia.campos@example.com','clave123','55667788','Jr. Los Álamos 159',3,'987654329',4),
+('Rosa','Gutiérrez','Salas','rosa.gutierrez@example.com','clave123','66778899','Av. Primavera 753',2,'987654330',4);
+
 
 INSERT INTO TB_PROVEEDOR (RUC, RAZON_SOCIAL, TELEFONO, DIRECCION, ID_DISTRITO)
 VALUES

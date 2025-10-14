@@ -64,4 +64,19 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
 
     List<Pedido> findByQrVerificacion(String qrVerificacion);
 
+
+    // Graficos relacionados a pedido
+    @Query(value = """
+        SELECT
+            TO_CHAR(v.fecha, 'TMMonth') AS mes,
+            COUNT(DISTINCT v.id_venta) AS total_ventas,
+            COUNT(DISTINCT p.id_pedido) AS total_pedidos
+        FROM tb_venta v
+        LEFT JOIN tb_pedido p ON v.id_venta = p.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha) = :anio
+        GROUP BY TO_CHAR(v.fecha, 'TMMonth'), EXTRACT(MONTH FROM v.fecha)
+        ORDER BY EXTRACT(MONTH FROM v.fecha)
+        """, nativeQuery = true)
+    List<Object[]> resumenMensualVentasPedidos(@Param("anio") int anio);
+
 }

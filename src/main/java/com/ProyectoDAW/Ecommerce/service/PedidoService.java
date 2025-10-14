@@ -119,4 +119,11 @@ public class PedidoService {
 
         return PedidoMapper.toDTO(pedido);
     }
+
+
+    // Graficos
+
+    public List<Object[]> resumenMensualVentasPedidos(){
+        return pedidoRepository.resumenMensualVentasPedidos(2025);
+    }
 }

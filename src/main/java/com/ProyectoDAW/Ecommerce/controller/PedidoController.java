@@ -2,6 +2,8 @@ package com.ProyectoDAW.Ecommerce.controller;
 
 import com.ProyectoDAW.Ecommerce.dto.CalificacionDTO;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
+import com.ProyectoDAW.Ecommerce.dto.ResumenMensualVentaPedidoDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
 import com.ProyectoDAW.Ecommerce.service.CalificacionService;
 import com.ProyectoDAW.Ecommerce.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pedido")
@@ -48,5 +52,29 @@ public class PedidoController {
     public ResponseEntity<PedidoDTO> buscarPedidoPorId(@PathVariable Integer idPedido) {
         PedidoDTO pedido = pedidoService.buscarPedidoPorId(idPedido);
         return ResponseEntity.ok(pedido);
+    }
+
+    // Graficos
+
+    @GetMapping("/resumen/mensual/VYP")
+    public ResponseEntity<List<ResumenMensualVentaPedidoDTO>>getRMVentaYPedido(){
+        try {
+            List<Object[]>result = pedidoService.resumenMensualVentasPedidos();
+
+            List<ResumenMensualVentaPedidoDTO> RMVP = result.stream()
+                    .map(row -> {
+                        String mes = ((String) row[0]).trim();
+                        int totalVentas = ((Number) row[1]).intValue();
+                        int totalPedidos = ((Number) row[2]).intValue();
+                        return new ResumenMensualVentaPedidoDTO(mes, totalVentas,totalPedidos);
+                    })
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(RMVP);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.emptyList());
+        }
     }
 }

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ProyectoDAW.Ecommerce.dto.*;
 import org.springframework.http.HttpHeaders;
 
 
@@ -20,14 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
-
-import com.ProyectoDAW.Ecommerce.dto.VentaPorDistrito;
-import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
-import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
-
-import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Venta;
@@ -259,4 +252,5 @@ public class VentaController {
 	                .body(Collections.emptyList());
 			}
 	}
+
 }

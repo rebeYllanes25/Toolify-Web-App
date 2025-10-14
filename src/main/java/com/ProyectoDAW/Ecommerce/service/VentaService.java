@@ -128,12 +128,29 @@ public class VentaService {
                 pedido.setVenta(venta);
                 pedido.setLatitud(venta.getPedido().getLatitud());
                 pedido.setLongitud(venta.getPedido().getLongitud());
+
+                var costoExtra = 0.0;
+                var movilidad = venta.getPedido().getMovilidad();
+
+                switch (movilidad) {
+                    case "M":
+                        costoExtra = 10;
+                        break;
+                    case "A":
+                        costoExtra = 15;
+                        break;
+                    default:
+                        costoExtra = 0;
+                }
+
+                var nuevoTotal = venta.getTotal() + costoExtra;
+                venta.setTotal(nuevoTotal);
+
                 pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
                 pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
                 pedido.setEstado("PE");
 
                 venta.setPedido(pedido);
-
             } else {
                 venta.setPedido(null);
             }

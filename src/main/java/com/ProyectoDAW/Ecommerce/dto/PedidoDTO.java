@@ -24,6 +24,7 @@ public class PedidoDTO {
     private String direccionEntrega;
     private BigDecimal latitud;
     private BigDecimal longitud;
+    private String movilidad;
     private List<DetalleVentaDTO> detalles;
     private Integer idRepartidor;
     private String nomRepartidor;

@@ -264,9 +264,6 @@ public class VentaService {
 	public List<Object[]>listadoDeDistroPorVentas(){
 		return ventaRepository.listaVentaPorDistrito();
 	}
-	@Transactional
-	public void marcarComoEntregado(Integer idVenta) {
-        ventaRepository.actualizarEstadoEntregado(idVenta);
-    }
+
 	
 }

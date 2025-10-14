@@ -3,7 +3,7 @@ import { Component, AfterViewInit } from '@angular/core';
 //chart.js
 import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Title, ChartConfiguration } from 'chart.js';
 import { VentaServiceService } from '../../service/venta-service.service';
-import { VentaPorTipoVentaMesDTO } from '../../../shared/dto/ventaPorTipoVentaMesDTO.model';
+
 @Component({
   selector: 'app-componente-cinco',
   imports: [],

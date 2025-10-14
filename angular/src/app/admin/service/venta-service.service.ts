@@ -8,12 +8,14 @@ import { VentaPorDistrito } from '../../shared/dto/ventaPorDistrito.model';
 
 //ENTORNO DE CONFIGURACION CON DOCKER
 import {environment} from '@envs/environment'
+import { RMVentaPedidoDTO } from '../../shared/dto/RMVentaPedidoDTO.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VentaServiceService {
 private url = `${environment.api_URL}/venta`;
+private url2 = `${environment.api_URL}/pedido`;
   constructor(
       private http: HttpClient
   ) { }
@@ -46,6 +48,10 @@ private url = `${environment.api_URL}/venta`;
 
   listadoVentaPorDistrito():Observable<VentaPorDistrito[]>{
     return this.http.get<VentaPorDistrito[]>(`${this.url}/listadoVentaMes`)
+  }
+
+  listadoRMVentaYPedidos():Observable<RMVentaPedidoDTO[]>{
+    return this.http.get<RMVentaPedidoDTO[]>(`${this.url2}/resumen/mensual/VYP`)
   }
 
 }

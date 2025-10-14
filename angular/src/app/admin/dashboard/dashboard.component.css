@@ -59,7 +59,7 @@ app-componente-cuatro {
   grid-column: 2/3;
 }
 
-app-componente-cinco {
+app-componente-seis {
   grid-row: 1/3;
   grid-column: 1/4;
 }
@@ -80,6 +80,6 @@ app-componente-cuatro {
   background: linear-gradient(135deg, #f9fafc, #eceff4);
 }
 
-app-componente-cinco {
+app-componente-seis {
   background: linear-gradient(135deg, #fdfdfd, #f1f1f1);
 }

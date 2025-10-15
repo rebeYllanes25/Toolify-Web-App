@@ -27,8 +27,8 @@ export class FinalizarCompraComponent implements OnInit {
   metodoEntrega: 'S' | 'D' = 'S';
   zoom = 15;
   center: google.maps.LatLngLiteral = { lat: -12.0464, lng: -77.0428 };
-  lat: number | null = null;
-  lng: number | null = null;
+  lat: number = 0;
+  lng: number = 0;
   especificaciones: String = '';
   direccionObtenida: string = '';
   movilidad: String = '';
@@ -69,12 +69,12 @@ export class FinalizarCompraComponent implements OnInit {
               this.center = { lat: usuario.latitud, lng: usuario.longitud };
               this.lat = usuario.latitud;
               this.lng = usuario.longitud;
-              this.obtenerDireccionDesdeCoordinatas(this.lat, this.lng);
+              this.obtenerDireccionDesdeCoordenadas(this.lat, this.lng);
             } else {
               this.center = { lat: -12.0464, lng: -77.0428 };
               this.lat = this.center.lat;
               this.lng = this.center.lng;
-              this.obtenerDireccionDesdeCoordinatas(this.lat, this.lng);
+              this.obtenerDireccionDesdeCoordenadas(this.lat, this.lng);
             }
           } else {
             AlertService.error('Tus datos de usuario no están completos.');
@@ -93,40 +93,44 @@ export class FinalizarCompraComponent implements OnInit {
   }
 
   // Método para obtener la dirección a partir de coordenadas
- obtenerDireccionDesdeCoordinatas(lat: number | null, lng: number | null): void {
-  if (!lat || !lng) {
-    console.warn('Coordenadas inválidas');
-    return;
+  obtenerDireccionDesdeCoordenadas(lat: number, lng: number): void {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+
+    fetch(url)
+      .then(r => r.json())
+      .then(data => {
+        this.direccionObtenida = this.construirDireccion(data.address);
+      })
+      .catch(err => {
+        console.error('Error Geocoding:', err);
+        this.direccionObtenida = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      });
   }
 
-  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
-
-  fetch(url)
-    .then(response => {
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return response.json();
-    })
-    .then(data => {
-      console.log('Respuesta Nominatim:', data);
-      
-      // Intenta obtener diferentes campos de la respuesta
-      const address = data.address || {};
-      this.direccionObtenida = 
-        address.road || 
-        address.street ||
-        address.neighbourhood ||
-        address.village ||
-        address.town ||
-        address.city ||
-        data.display_name || 
-        `${lat}, ${lng}`;
-      
-      console.log('Dirección obtenida:', this.direccionObtenida);
-    })
-    .catch(error => {
-      console.error('Error al obtener dirección de Nominatim:', error);
-      this.direccionObtenida = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-    });
+// Método auxiliar para construir la dirección
+private construirDireccion(address: any): string {
+  const partes = [];
+  
+  // Calle y número
+  if (address.road) {
+    partes.push(`${address.road} ${address.house_number || ''}`.trim());
+  }
+  
+  // Barrio/Distrito
+  if (address.neighbourhood) {
+    partes.push(address.neighbourhood);
+  } else if (address.suburb) {
+    partes.push(address.suburb);
+  }
+  
+  // Ciudad
+  if (address.city) {
+    partes.push(address.city);
+  } else if (address.town) {
+    partes.push(address.town);
+  }
+  
+  return partes.filter(p => p).join(', ') || address.display_name;
 }
 
   calcularTotal(): void {
@@ -259,7 +263,7 @@ export class FinalizarCompraComponent implements OnInit {
       this.lat = coords.lat();
       this.lng = coords.lng();
       this.center = { lat: this.lat, lng: this.lng };
-      this.obtenerDireccionDesdeCoordinatas(this.lat, this.lng);
+      this.obtenerDireccionDesdeCoordenadas(this.lat, this.lng);
     }
   }
 
@@ -269,7 +273,7 @@ export class FinalizarCompraComponent implements OnInit {
       this.lat = position.lat();
       this.lng = position.lng();
       console.log('Nueva posición del marcador:', this.lat, this.lng);
-      this.obtenerDireccionDesdeCoordinatas(this.lat, this.lng);
+      this.obtenerDireccionDesdeCoordenadas(this.lat, this.lng);
     }
   }
 }

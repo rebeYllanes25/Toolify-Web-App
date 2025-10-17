@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ProyectoDAW.Ecommerce.model.*;
+import com.ProyectoDAW.Ecommerce.repository.ICalificacionRepository;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,6 @@ public class VentaService {
 	
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
-
 
 	public List<VentaDTO> getVentasPorUsuario(Integer idUsuario) {
 		List<Venta> ventas = ventaRepository.findByUsuarioId(idUsuario);
@@ -148,9 +148,10 @@ public class VentaService {
 
                 pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
                 pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
-                pedido.setEstado("PE");
+                pedido.setEstado("PE");                              
 
                 venta.setPedido(pedido);
+                
             } else {
                 venta.setPedido(null);
             }

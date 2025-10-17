@@ -14,20 +14,8 @@ import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
 
 public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 
-
-
 	@Query("SELECT v FROM Venta v WHERE v.usuario.idUsuario = :idUsuario ORDER BY v.idVenta DESC")
 	List<Venta> findByUsuarioId(@Param("idUsuario") Integer idUsuario);
-
-	@Query("""
-
-			SELECT v FROM Venta v WHERE v.usuario.idUsuario = :idUsuario
-			AND
-			v.fechaRegistro BETWEEN :fechaIni AND :fechaFin
-			ORDER BY v.idVenta DESC
-			""")
-	List<Venta> findByUsuarioAndFecha(@Param("idUsuario") Integer idUsuario, @Param("fechaIni") LocalDate fechaIni,
-			@Param("fechaFin") LocalDate fechaFin);
 
 	@Query("""
 			    SELECT COUNT(v.idVenta)
@@ -91,14 +79,6 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 			JOIN v.usuario us
 			""")
 	List<VentaFiltroFechaTipoUsuario> ListadoVentaFechaAndTipoVentaNull();
-
-    List<Venta> findByTipoVentaAndEstado(String tipoVenta, String estado);
-	
-    @Modifying
-    @Query("UPDATE Venta v SET v.estado = 'E' WHERE v.idVenta = :idVenta")
-    void actualizarEstadoEntregado(@Param("idVenta") Integer idVenta);
-	
-	
 	
 	@Query(value = """
 			    SELECT

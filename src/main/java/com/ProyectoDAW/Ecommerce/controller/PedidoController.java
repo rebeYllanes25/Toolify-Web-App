@@ -1,6 +1,7 @@
 package com.ProyectoDAW.Ecommerce.controller;
 
 import com.ProyectoDAW.Ecommerce.dto.CalificacionDTO;
+import com.ProyectoDAW.Ecommerce.dto.CalificarRequest;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResumenMensualVentaPedidoDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,23 +31,38 @@ public class PedidoController {
     @GetMapping("/{idCliente}/pedidos")
     public ResponseEntity<List<PedidoDTO>> listarPedidosPorCliente(
             @PathVariable("idCliente") Integer idCliente,
-            @Param("estado") String estado) {
+            @RequestParam("estado") String estado) {
         List<PedidoDTO> pedidos = pedidoService.listarPedidosPorClienteYEstado(idCliente,estado);
         return ResponseEntity.ok(pedidos);
     }
 
     @PostMapping("/{idPedido}/calificar")
-    public ResponseEntity<CalificacionDTO> registrarCalificacion(
+    public ResponseEntity<?> registrarCalificacion(
             @PathVariable Integer idPedido,
-            @RequestParam Short puntuacion,
-            @RequestParam(required = false) String comentario) {
-
+            @RequestBody(required = false) CalificarRequest request) {
+        
+        if (request == null || request.getPuntuacion() == null) {
+            return ResponseEntity.ok(Map.of(
+                "mensaje", "Calificación omitida",
+                "calificado", false
+            ));
+        }
+        
+        if (request.getPuntuacion() < 1 || request.getPuntuacion() > 5) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "La puntuación debe estar entre 1 y 5"));
+        }
+        
         CalificacionDTO calificacion = calificacionService.registrarCalificacion(
                 idPedido,
-                puntuacion,
-                comentario
+                request.getPuntuacion(),
+                request.getComentario()
         );
-        return new ResponseEntity<>(calificacion, HttpStatus.CREATED);
+        
+        return new ResponseEntity<>(Map.of(
+            "calificacion", calificacion,
+            "calificado", true
+        ), HttpStatus.CREATED);
     }
 
     @GetMapping("/{idPedido}")

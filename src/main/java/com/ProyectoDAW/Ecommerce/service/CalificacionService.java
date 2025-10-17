@@ -46,20 +46,36 @@ public class CalificacionService {
     // seteamos el comentario y puntaje del cliente
     @Transactional
     public CalificacionDTO registrarCalificacion(Integer idPedido, Short puntuacion, String comentario) {
+        
+        Calificacion calificacionExistente = calificacionRepository.findByPedidoIdPedido(idPedido)
+                .orElse(null);
+        
+        Calificacion calificacion;
+        
+        if (calificacionExistente != null) {
+            calificacion = calificacionExistente;
+            calificacion.setPuntuacion(puntuacion);
+            calificacion.setComentario(comentario);
+            calificacion.setFecha(LocalDateTime.now());
+        } else {
 
-        Calificacion calificacion = calificacionRepository.findByPedidoIdPedido(idPedido)
-                .orElseThrow(() -> new RuntimeException("Error: No existe un registro de calificación inicial para este pedido."));
-
-        if (puntuacion < 1 || puntuacion > 5) {
-            throw new IllegalArgumentException("La puntuación debe estar entre 1 y 5.");
+        	Pedido pedido = pedidoRepository.findById(idPedido)
+                    .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+            
+            if (!"EN".equals(pedido.getEstado())) {
+                throw new RuntimeException("Solo se pueden calificar pedidos entregados");
+            }
+            
+            calificacion = new Calificacion();
+            calificacion.setPedido(pedido);
+            calificacion.setCliente(pedido.getVenta().getUsuario());
+            calificacion.setRepartidor(pedido.getRepartidor());
+            calificacion.setPuntuacion(puntuacion);
+            calificacion.setComentario(comentario);
+            calificacion.setFecha(LocalDateTime.now());
         }
-
-        calificacion.setPuntuacion(puntuacion);
-        calificacion.setComentario(comentario);
-        calificacion.setFecha(LocalDateTime.now());
-
-        Calificacion calificacionGuardada = calificacionRepository.save(calificacion);
-
-        return CalificacionMapper.toDTO(calificacionGuardada);
+        
+        Calificacion guardada = calificacionRepository.save(calificacion);
+        return CalificacionMapper.toDTO(guardada);
     }
 }

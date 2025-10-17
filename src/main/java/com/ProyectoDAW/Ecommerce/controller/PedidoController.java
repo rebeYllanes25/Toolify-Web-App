@@ -36,34 +36,27 @@ public class PedidoController {
         return ResponseEntity.ok(pedidos);
     }
 
-    @PostMapping("/{idPedido}/calificar")
-    public ResponseEntity<?> registrarCalificacion(
-            @PathVariable Integer idPedido,
-            @RequestBody(required = false) CalificarRequest request) {
-        
-        if (request == null || request.getPuntuacion() == null) {
-            return ResponseEntity.ok(Map.of(
-                "mensaje", "Calificación omitida",
-                "calificado", false
-            ));
-        }
-        
-        if (request.getPuntuacion() < 1 || request.getPuntuacion() > 5) {
-            return ResponseEntity.badRequest()
-                .body(Map.of("error", "La puntuación debe estar entre 1 y 5"));
-        }
-        
-        CalificacionDTO calificacion = calificacionService.registrarCalificacion(
-                idPedido,
-                request.getPuntuacion(),
-                request.getComentario()
-        );
-        
-        return new ResponseEntity<>(Map.of(
-            "calificacion", calificacion,
-            "calificado", true
-        ), HttpStatus.CREATED);
-    }
+	@PostMapping("/{idPedido}/calificar")
+	public ResponseEntity<CalificacionDTO> registrarCalificacion(
+	        @PathVariable Integer idPedido,
+	        @RequestBody(required = false) CalificarRequest request) {
+	    
+	    if (request == null || request.getPuntuacion() == null) {
+	        return ResponseEntity.noContent().build();
+	    }
+	    
+	    if (request.getPuntuacion() < 1 || request.getPuntuacion() > 5) {
+	        return ResponseEntity.badRequest().build();
+	    }
+	    
+	    CalificacionDTO calificacion = calificacionService.registrarCalificacion(
+	            idPedido,
+	            request.getPuntuacion(),
+	            request.getComentario()
+	    );
+	    
+	    return new ResponseEntity<>(calificacion, HttpStatus.CREATED);
+	}
 
     @GetMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> buscarPedidoPorId(@PathVariable Integer idPedido) {

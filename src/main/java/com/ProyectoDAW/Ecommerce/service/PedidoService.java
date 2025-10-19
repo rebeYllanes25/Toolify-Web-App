@@ -47,6 +47,12 @@ public class PedidoService {
         List<Pedido> pedidos = pedidoRepository.listarPedidosPorClienteYEstado(idCliente, estado);
         return pedidos.stream().map(PedidoMapper::toDTO).toList();
     }
+    
+    @Transactional
+    public List<PedidoDTO> listarPedidosPorCliente(Integer idCliente) {
+        List<Pedido> pedidos = pedidoRepository.listarPedidosPorCliente(idCliente);
+        return pedidos.stream().map(PedidoMapper::toDTO).toList();
+    }
 
     @Transactional
     public PedidoDTO actualizarEstado(Integer idPedido, String estado) {

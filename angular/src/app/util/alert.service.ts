@@ -1,7 +1,23 @@
 import Swal from 'sweetalert2';
 
 export class AlertService {
-  
+  static confirm(
+    message: string,
+    title = '¿Estás seguro?',
+    confirmButtonText = 'Sí',
+    cancelButtonText = 'No'
+  ): Promise<boolean> {
+    return Swal.fire({
+      title,
+      text: message,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText,
+      cancelButtonText,
+      reverseButtons: true,
+    }).then((result) => result.isConfirmed);
+  }
+
   static success(message: string, title = 'Éxito') {
     Swal.fire({
       icon: 'success',
@@ -36,7 +52,7 @@ export class AlertService {
       icon: 'error',
       title: 'Error',
       text: message,
-      confirmButtonText: 'OK'
+      confirmButtonText: 'OK',
     });
   }
 }

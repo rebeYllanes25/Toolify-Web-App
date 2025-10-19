@@ -35,6 +35,13 @@ public class PedidoController {
         List<PedidoDTO> pedidos = pedidoService.listarPedidosPorClienteYEstado(idCliente,estado);
         return ResponseEntity.ok(pedidos);
     }
+    
+    @GetMapping("/historial/{idCliente}")
+    public ResponseEntity<List<PedidoDTO>> listarTodosLosPedidos(
+            @PathVariable("idCliente") Integer idCliente) {
+        List<PedidoDTO> pedidos = pedidoService.listarPedidosPorCliente(idCliente);
+        return ResponseEntity.ok(pedidos);
+    }
 
 	@PostMapping("/{idPedido}/calificar")
 	public ResponseEntity<CalificacionDTO> registrarCalificacion(

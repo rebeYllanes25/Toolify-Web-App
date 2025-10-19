@@ -12,7 +12,7 @@ export interface Usuario {
   direccion: string;
   distrito: Distrito;   
   telefono: string;
-  rol: Rol;                
-  fechaRegistro: string;    
-  estado: boolean;
+  rol?: Rol;                
+  fechaRegistro?: string;    
+  estado?: boolean;
 }

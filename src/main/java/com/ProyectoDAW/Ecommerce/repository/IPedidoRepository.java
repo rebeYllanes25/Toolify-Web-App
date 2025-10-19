@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
 
@@ -90,5 +91,6 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
         ORDER BY EXTRACT(MONTH FROM v.fecha)
         """, nativeQuery = true)
     List<Object[]> resumenMensualVentasPedidos(@Param("anio") int anio);
-
+    
+    Optional<Pedido> findByVenta_IdVenta(Integer idVenta);
 }

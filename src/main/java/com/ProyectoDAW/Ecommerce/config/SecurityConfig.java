@@ -34,6 +34,9 @@ public class SecurityConfig {
                 .requestMatchers("/auth/login").permitAll()
                 .requestMatchers("/cliente/index").permitAll()
                 .requestMatchers("/cliente/producto").permitAll()
+                
+                .requestMatchers("/pedido/**").authenticated()  // Solo necesita estar autenticado
+
                 .anyRequest().authenticated()
             )/*
             .authorizeHttpRequests(auth -> auth

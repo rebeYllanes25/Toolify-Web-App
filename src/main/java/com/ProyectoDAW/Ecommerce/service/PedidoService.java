@@ -7,6 +7,7 @@ import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
 import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
+import com.ProyectoDAW.Ecommerce.util.FechaUtils;
 import com.ProyectoDAW.Ecommerce.util.mappers.PedidoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +125,7 @@ public class PedidoService {
 
         pedido.setEstado("EN");
         pedido.setFechaEntregado(LocalDateTime.now());
+        actualizarTiempoEntrega(pedido.getIdPedido());
         pedidoRepository.save(pedido);
 
         Venta venta = pedido.getVenta();
@@ -135,6 +137,22 @@ public class PedidoService {
         return PedidoMapper.toDTO(pedido);
     }
 
+    
+    public void actualizarTiempoEntrega(Integer idPedido) {
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+
+        LocalDateTime fechaEnCamino = pedido.getFechaEnCamino();
+        LocalDateTime fechaEntregado = pedido.getFechaEntregado();
+
+        Long minutos = FechaUtils.calcularDiferenciaMinutos(fechaEnCamino, fechaEntregado);
+
+        if (minutos != null) {
+            pedido.setTiempoEntrega(minutos.shortValue());
+            pedidoRepository.save(pedido);
+        }
+    }
+    
 
     // Graficos
 

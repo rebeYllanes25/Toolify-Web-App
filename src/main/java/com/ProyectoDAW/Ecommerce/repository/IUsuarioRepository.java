@@ -12,4 +12,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, Integer>{
 	long countClientes();
 	
 	Optional<Usuario> findUsuarioByCorreo(String username);
+	Optional<Usuario> findByCorreo(String correo);
+	Optional<Usuario> findByNroDocumento(String nroDocumento);
+	Optional<Usuario> findByTelefono(String telefono);
 }

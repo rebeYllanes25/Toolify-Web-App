@@ -31,11 +31,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         
         String path = request.getServletPath();
-        
-        // ✅ Rutas públicas: continuar sin validar token
-        if ("/auth/login".equals(path) || 
-            "/cliente/index".equals(path) || 
-            "/cliente/producto".equals(path)) {
+        if ("/auth/login".equals(path) || "/auth/register".equals(path) || "/cliente/index".equals(path) || "/cliente/producto".equals(path) ||
+        		"/distrito/list".equals(path)) {
             chain.doFilter(request, response);
             return;
         }
@@ -98,4 +95,6 @@ public class JwtFilter extends OncePerRequestFilter {
         // ✅ Continuar con la cadena de filtros (CRÍTICO)
         chain.doFilter(request, response);
     }
+
 }
+

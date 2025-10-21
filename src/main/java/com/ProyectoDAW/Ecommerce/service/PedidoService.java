@@ -7,14 +7,12 @@ import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
 import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
-import com.ProyectoDAW.Ecommerce.util.FechaUtils;
 import com.ProyectoDAW.Ecommerce.util.mappers.PedidoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,12 +47,6 @@ public class PedidoService {
         List<Pedido> pedidos = pedidoRepository.listarPedidosPorClienteYEstado(idCliente, estado);
         return pedidos.stream().map(PedidoMapper::toDTO).toList();
     }
-    
-    @Transactional
-    public List<PedidoDTO> listarPedidosPorCliente(Integer idCliente) {
-        List<Pedido> pedidos = pedidoRepository.listarPedidosPorCliente(idCliente);
-        return pedidos.stream().map(PedidoMapper::toDTO).toList();
-    }
 
     @Transactional
     public PedidoDTO actualizarEstado(Integer idPedido, String estado) {
@@ -65,10 +57,6 @@ public class PedidoService {
         }
 
         Pedido pedidoActualizado = getPedidoById(idPedido);
-        
-        if ("EC".equals(pedidoActualizado.getEstado())) {
-        	pedidoActualizado.setFechaEnCamino(LocalDateTime.now());
-        }
         
         return PedidoMapper.toDTO(pedidoActualizado);
     }
@@ -81,14 +69,11 @@ public class PedidoService {
 
         int exito = pedidoRepository.registrarRepartidor(idPedido, idRepartidor);
         int exito2 = pedidoRepository.actualizarEstado(idPedido, "AS");
-        
 
         if (exito == 0 || exito2 == 0) {
             throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido + " para asignar el repartidor.");
         }
         Pedido pedidoActualizado = getPedidoById(idPedido);
-        pedidoActualizado.setFechaAsignacion(LocalDateTime.now());
-        pedidoRepository.save(pedidoActualizado);
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 
@@ -124,8 +109,6 @@ public class PedidoService {
         }
 
         pedido.setEstado("EN");
-        pedido.setFechaEntregado(LocalDateTime.now());
-        actualizarTiempoEntrega(pedido.getIdPedido());
         pedidoRepository.save(pedido);
 
         Venta venta = pedido.getVenta();
@@ -137,22 +120,6 @@ public class PedidoService {
         return PedidoMapper.toDTO(pedido);
     }
 
-    
-    public void actualizarTiempoEntrega(Integer idPedido) {
-        Pedido pedido = pedidoRepository.findById(idPedido)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-
-        LocalDateTime fechaEnCamino = pedido.getFechaEnCamino();
-        LocalDateTime fechaEntregado = pedido.getFechaEntregado();
-
-        Long minutos = FechaUtils.calcularDiferenciaMinutos(fechaEnCamino, fechaEntregado);
-
-        if (minutos != null) {
-            pedido.setTiempoEntrega(minutos.shortValue());
-            pedidoRepository.save(pedido);
-        }
-    }
-    
 
     // Graficos
 

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
 
@@ -38,18 +37,6 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
     """)
     List<Pedido> listarPedidosPorClienteYEstado(@Param("idCliente") Integer idCliente,
                                                 @Param("estado") String estado);
-    
-    @Query("""
-            SELECT DISTINCT p
-            FROM Pedido p
-            JOIN FETCH p.venta v
-            JOIN FETCH v.usuario u
-            LEFT JOIN v.detalles d
-            LEFT JOIN d.producto prod
-            LEFT JOIN FETCH p.repartidor r
-            WHERE u.idUsuario = :idCliente
-        """)
-        List<Pedido> listarPedidosPorCliente(@Param("idCliente") Integer idCliente);
 
     @Modifying
     @Transactional
@@ -91,6 +78,5 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
         ORDER BY EXTRACT(MONTH FROM v.fecha)
         """, nativeQuery = true)
     List<Object[]> resumenMensualVentasPedidos(@Param("anio") int anio);
-    
-    Optional<Pedido> findByVenta_IdVenta(Integer idVenta);
+
 }

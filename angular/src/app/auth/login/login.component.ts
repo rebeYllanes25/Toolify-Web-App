@@ -13,12 +13,12 @@ import { UserService } from '../../cliente/service/user.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit{
   loginForm: FormGroup;
   errorMessage: string = '';
-  ngOnInit(): void {
+ngOnInit(): void {
     // Subscribe to query parameters
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       // Check if the 'loginAlert' parameter exists and has a value of 'true'
       if (params['message'] === 'login_required') {
         // Display the info alert with your desired message
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { loginAlert: null },
-          queryParamsHandling: 'merge', // Merge with any other existing query params
+          queryParamsHandling: 'merge' // Merge with any other existing query params
         });
       }
     });
@@ -53,8 +53,10 @@ export class LoginComponent implements OnInit {
           this.authService.saveToken(token);
           console.log('Token guardado:', token);
 
+          // Ahora obtener los datos del usuario
           this.authService.getUsuario().subscribe({
             next: (usuario) => {
+              console.log('Usuario completo:', usuario);
               this.userService.setUser(usuario);
 
               const rol = usuario.rol;
@@ -81,18 +83,15 @@ export class LoginComponent implements OnInit {
             },
             error: (err) => {
               console.error('Error al obtener usuario:', err);
-              AlertService.error(err);
+              this.errorMessage = 'Error al cargar usuario';
             },
           });
         },
         error: (err) => {
           this.errorMessage = 'Credenciales incorrectas';
-          AlertService.error(err);
+          console.error(err);
         },
       });
     }
-  }
-  register(){
-    this.router.navigate(['/auth/register']);
   }
 }

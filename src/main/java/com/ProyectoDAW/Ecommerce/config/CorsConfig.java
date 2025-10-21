@@ -13,12 +13,16 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-            	registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(false);
+                registry.addMapping("/**")
+                        .allowedOrigins(
+                        		"http://localhost:4200",
+                        		"http://localhost",
+                        		"https://angular-mu-gray.vercel.app") 
+                        .allowedMethods("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
 }
+

@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -169,19 +168,6 @@ public class VentaController {
 	    }
 	}
 
-	
-	@PutMapping("/{idVenta}/cancelar")
-    public ResponseEntity<ResultadoResponse> cancelarVenta(
-            @PathVariable Integer idVenta) {
-        
-        ResultadoResponse resultado = ventaService.cancelarVenta(idVenta);
-        
-        if (resultado.isValor()) {
-            return ResponseEntity.ok(resultado);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
-        }
-    }
     // Graficos de Admin
 
     @GetMapping({"/filtradoVentas", "/filtradoVentas/{fechaInicio}&{fechaFin}"})

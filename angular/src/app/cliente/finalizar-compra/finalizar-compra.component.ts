@@ -50,7 +50,7 @@ export class FinalizarCompraComponent implements OnInit {
     private carritoService: CarritoService,
     private compraService: CompraService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -83,16 +83,12 @@ export class FinalizarCompraComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al cargar datos de usuario:', error);
-          AlertService.error(
-            'Error al cargar tus datos. Intenta recargar la página.'
-          );
+          AlertService.error('Error al cargar tus datos. Intenta recargar la página.');
           this.authService.logout();
-        },
+        }
       });
     } else {
-      this.router.navigate(['/login'], {
-        queryParams: { message: 'login_required' },
-      });
+      this.router.navigate(['/login'], { queryParams: { message: 'login_required' } });
     }
   }
 
@@ -101,45 +97,45 @@ export class FinalizarCompraComponent implements OnInit {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
 
     fetch(url)
-      .then((r) => r.json())
-      .then((data) => {
+      .then(r => r.json())
+      .then(data => {
         this.direccionObtenida = this.construirDireccion(data.address);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('Error Geocoding:', err);
         this.direccionObtenida = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
       });
   }
 
-  // Método auxiliar para construir la dirección
-  private construirDireccion(address: any): string {
-    const partes = [];
-
-    // Calle y número
-    if (address.road) {
-      partes.push(`${address.road} ${address.house_number || ''}`.trim());
-    }
-
-    // Barrio/Distrito
-    if (address.neighbourhood) {
-      partes.push(address.neighbourhood);
-    } else if (address.suburb) {
-      partes.push(address.suburb);
-    }
-
-    // Ciudad
-    if (address.city) {
-      partes.push(address.city);
-    } else if (address.town) {
-      partes.push(address.town);
-    }
-
-    return partes.filter((p) => p).join(', ') || address.display_name;
+// Método auxiliar para construir la dirección
+private construirDireccion(address: any): string {
+  const partes = [];
+  
+  // Calle y número
+  if (address.road) {
+    partes.push(`${address.road} ${address.house_number || ''}`.trim());
   }
+  
+  // Barrio/Distrito
+  if (address.neighbourhood) {
+    partes.push(address.neighbourhood);
+  } else if (address.suburb) {
+    partes.push(address.suburb);
+  }
+  
+  // Ciudad
+  if (address.city) {
+    partes.push(address.city);
+  } else if (address.town) {
+    partes.push(address.town);
+  }
+  
+  return partes.filter(p => p).join(', ') || address.display_name;
+}
 
   calcularTotal(): void {
     this.total = this.carritoService.getTotal();
-
+    
     if (this.metodoEntrega === 'D' && this.movilidad === 'M') {
       this.total += 10;
     } else if (this.metodoEntrega === 'D' && this.movilidad === 'A') {
@@ -181,29 +177,28 @@ export class FinalizarCompraComponent implements OnInit {
 
     const ventaParaBackend: any = {
       usuario: {
-        idUsuario: this.usuario.idUsuario,
+        idUsuario: this.usuario.idUsuario
       },
       metodoEntrega: this.metodoEntrega,
-      detalles: this.carrito.map((d) => ({
+      detalles: this.carrito.map(d => ({
         producto: {
-          idProducto: d.producto.idProducto,
+          idProducto: d.producto.idProducto
         },
-        cantidad: d.cantidad,
+        cantidad: d.cantidad
       })),
       pedido: {
-        direccionEntrega:
-          this.metodoEntrega === 'D' ? this.direccionObtenida : null,
+        direccionEntrega: this.metodoEntrega === 'D' ? this.direccionObtenida : null,
         latitud: this.metodoEntrega === 'D' ? this.lat : null,
         longitud: this.metodoEntrega === 'D' ? this.lng : null,
-        movilidad: this.movilidad,
+        movilidad: this.movilidad
       },
-      especificaciones: this.especificaciones,
+      especificaciones: this.especificaciones
     };
 
     console.log(ventaParaBackend);
 
     this.compraService.guardarVentaDelivery(ventaParaBackend).subscribe({
-      next: (response) => {
+      next: response => {
         if (response.valor) {
           AlertService.success(response.mensaje);
           this.carritoService.limpiarCarrito();
@@ -219,9 +214,9 @@ export class FinalizarCompraComponent implements OnInit {
           AlertService.error(response.mensaje);
         }
       },
-      error: (err) => {
+      error: err => {
         AlertService.error('Error al procesar la compra: ' + err.message);
-      },
+      }
     });
   }
 
@@ -231,20 +226,14 @@ export class FinalizarCompraComponent implements OnInit {
 
     if (isLoggedIn) {
       if (this.usuario && this.usuario.nombres) {
-        const modal = new bootstrap.Modal(
-          document.getElementById('modalPago')!
-        );
+        const modal = new bootstrap.Modal(document.getElementById('modalPago')!);
         modal.show();
       } else {
-        AlertService.error(
-          'Tus datos de usuario no están completos. Intenta recargar la página.'
-        );
+        AlertService.error('Tus datos de usuario no están completos. Intenta recargar la página.');
       }
     } else {
       console.log('User is not logged in. Redirecting to login page...');
-      this.router.navigate(['/login'], {
-        queryParams: { message: 'login_required' },
-      });
+      this.router.navigate(['/login'], { queryParams: { message: 'login_required' } });
     }
   }
 

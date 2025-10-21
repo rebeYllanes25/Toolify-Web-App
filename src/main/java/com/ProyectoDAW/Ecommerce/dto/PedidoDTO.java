@@ -30,6 +30,5 @@ public class PedidoDTO {
     private String nomRepartidor;
     private String especificaciones;
     private String estado;
-    private String qrVerificationCode;
 }
 

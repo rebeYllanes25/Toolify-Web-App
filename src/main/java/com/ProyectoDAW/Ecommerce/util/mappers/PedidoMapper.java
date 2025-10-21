@@ -48,7 +48,8 @@ public class PedidoMapper {
                 p.getRepartidor() != null ? p.getRepartidor().getIdUsuario() : null,
                 p.getRepartidor() != null ? p.getRepartidor().getNombres() : null,
                 v.getEspecificaciones(),
-                p.getEstado()
+                p.getEstado(),
+                p.getQrVerificacion()
         );
     }
 }

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import com.ProyectoDAW.Ecommerce.model.*;
 import com.ProyectoDAW.Ecommerce.repository.ICalificacionRepository;
-import com.ProyectoDAW.Ecommerce.repository.IDetalleVentaRepository;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
 import com.ProyectoDAW.Ecommerce.util.GeneradorUtil;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 
@@ -41,12 +39,6 @@ public class VentaService {
 	
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
-	
-	@Autowired
-    private IPedidoRepository pedidoRepository;
-	
-	@Autowired
-	private IDetalleVentaRepository detalleVentaRepository;
 
 	public List<VentaDTO> getVentasPorUsuario(Integer idUsuario) {
 		List<Venta> ventas = ventaRepository.findByUsuarioId(idUsuario);
@@ -90,6 +82,7 @@ public class VentaService {
 
         return dto;
     }
+
 
 	@Transactional
 	public ResultadoResponse guardarVentaDelivery(Venta venta) {
@@ -171,6 +164,8 @@ public class VentaService {
         }
 	}
 
+
+
     @Transactional
 	public ResultadoResponse guardarVenta(Venta venta) {
         try {
@@ -234,48 +229,6 @@ public class VentaService {
         }
 	}
 
-    public ResultadoResponse cancelarVenta(Integer idVenta) {
-        try {
-            Optional<Venta> ventaOpt = ventaRepository.findById(idVenta);
-            if (ventaOpt.isEmpty()) {
-                return new ResultadoResponse(false, "Venta no encontrada con ID: " + idVenta);
-            }
-
-            Venta venta = ventaOpt.get();
-            venta.setEstado("C");
-            ventaRepository.save(venta);
-
-            Optional<Pedido> pedidoOpt = pedidoRepository.findByVenta_IdVenta(idVenta);
-            String mensaje;
-            if (pedidoOpt.isPresent()) {
-                Pedido pedido = pedidoOpt.get();
-                pedido.setEstado("FA");
-                pedidoRepository.save(pedido);
-                mensaje = "Venta y pedido cancelados exitosamente";
-            } else {
-                mensaje = "Venta cancelada exitosamente";
-            }
-
-            List<DetalleVenta> detalles = detalleVentaRepository.findByVenta_IdVenta(idVenta);
-
-            for (DetalleVenta detalle : detalles) {
-                Producto producto = detalle.getProducto();
-                int cantidad = detalle.getCantidad();
-
-                int stockActual = producto.getStock();  
-                producto.setStock(stockActual + cantidad);
-
-                productoRepository.save(producto);
-            }
-
-            return new ResultadoResponse(true, mensaje);
-
-        } catch (Exception e) {
-            return new ResultadoResponse(false, "Error al cancelar la venta: " + e.getMessage());
-        }
-    }
-
-    
 	// Vista-Inicio-Vendedor
 	private String obtenerMesActual() {
 		LocalDate fechaActual = LocalDate.now();

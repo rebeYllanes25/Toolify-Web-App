@@ -32,10 +32,8 @@ public class SecurityConfig {
             //Configurar rutas públicas
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login").permitAll()
-                .requestMatchers("/auth/register").permitAll()
                 .requestMatchers("/cliente/index").permitAll()
                 .requestMatchers("/cliente/producto").permitAll()
-                .requestMatchers("/distrito/list").permitAll()
                 .anyRequest().authenticated()
             )/*
             .authorizeHttpRequests(auth -> auth
@@ -58,6 +56,5 @@ public class SecurityConfig {
 
    
 }
-
 
 

@@ -17,8 +17,8 @@ public class DistritoController {
 	private DistritoService distritoService;
 
 	
-	@GetMapping("/list")
+	/*@GetMapping("/list")
 	public List<Distrito> listarDistritos() {
 		return distritoService.getAll();
-	}
+	}*/
 }

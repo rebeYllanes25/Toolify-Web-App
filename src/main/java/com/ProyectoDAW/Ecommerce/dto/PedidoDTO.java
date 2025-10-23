@@ -21,6 +21,7 @@ public class PedidoDTO {
     private String nomCliente;
     private LocalDateTime fecha;
     private Double total;
+    private String qrVerificationCode;
     private String direccionEntrega;
     private BigDecimal latitud;
     private BigDecimal longitud;
@@ -28,6 +29,8 @@ public class PedidoDTO {
     private List<DetalleVentaDTO> detalles;
     private Integer idRepartidor;
     private String nomRepartidor;
+    private String apePaternoRepartidor;    
+    private String telefonoRepartidor;
     private String especificaciones;
     private String estado;
 }

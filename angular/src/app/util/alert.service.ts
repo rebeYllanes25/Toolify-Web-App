@@ -12,7 +12,22 @@ export class AlertService {
       showConfirmButton: false,
     });
   }
-
+static confirm(
+    message: string,
+    title = '¿Estás seguro?',
+    confirmButtonText = 'Sí',
+    cancelButtonText = 'No'
+  ): Promise<boolean> {
+    return Swal.fire({
+      title,
+      text: message,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText,
+      cancelButtonText,
+      reverseButtons: true,
+    }).then((result) => result.isConfirmed);
+  }
   static error(message: string, title = 'Error') {
     Swal.fire({
       icon: 'error',

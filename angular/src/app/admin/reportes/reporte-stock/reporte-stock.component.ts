@@ -327,4 +327,13 @@ export class ReporteStockComponent implements OnInit {
       console.error('Error al generar PDF:', error);
     }
   }
+  calcularStockTotal(): number {
+  if (!this.dataSource || !this.dataSource.data) return 0;
+  return this.dataSource.data.reduce((total, producto) => total + producto.stock, 0);
+}
+
+contarStockBajo(): number {
+  if (!this.dataSource || !this.dataSource.data) return 0;
+  return this.dataSource.data.filter(producto => producto.stock <= 10 && producto.stock > 0).length;
+}
 }

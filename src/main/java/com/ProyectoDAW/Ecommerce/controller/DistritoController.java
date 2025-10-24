@@ -16,9 +16,8 @@ public class DistritoController {
 	@Autowired
 	private DistritoService distritoService;
 
-	
-	/*@GetMapping("/list")
+	@GetMapping("/list")
 	public List<Distrito> listarDistritos() {
 		return distritoService.getAll();
-	}*/
+	}
 }

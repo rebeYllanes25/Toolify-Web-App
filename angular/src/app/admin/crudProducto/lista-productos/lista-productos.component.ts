@@ -14,19 +14,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 //import MODAL Producto
-import { MatDialog } from '@angular/material/dialog'
+import { MatDialog } from '@angular/material/dialog';
 import { DetailsProductoComponent } from '../details-producto/details-producto.component';
-import { DesactivarProductoComponent } from '../desactivar-producto/desactivar-producto.component'
+import { DesactivarProductoComponent } from '../desactivar-producto/desactivar-producto.component';
 
 //alert IZI_TOAST_ALERT
 import { AlertIziToast } from '../../../util/iziToastAlert.service';
 
 @Component({
   selector: 'app-lista-productos',
-  standalone : true,
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -35,57 +35,68 @@ import { AlertIziToast } from '../../../util/iziToastAlert.service';
     MatButtonModule,
     MatTableModule,
     MatInputModule,
-   MatPaginatorModule
-],
+    MatPaginatorModule,
+  ],
   templateUrl: './lista-productos.component.html',
-  styleUrl: './lista-productos.component.css'
+  styleUrl: './lista-productos.component.css',
 })
 export class ListaProductosComponent implements OnInit {
-
   dataSource = new MatTableDataSource<Producto>([]);
-  columnas: string[] = ['idProducto', 'nombre', 'proveedor', 'categoria', 'precio', 'stock', 'acciones'];
+  columnas: string[] = [
+    'idProducto',
+    'nombre',
+    'proveedor',
+    'categoria',
+    'precio',
+    'stock',
+    'acciones',
+  ];
 
-
-
- @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private productoService: ProductoServiceService,
     private dialog: MatDialog
+  ) {}
+  filtroTexto: string = '';
 
-  ) { }
-
+  aplicarFiltro() {
+    const filtro = this.filtroTexto.trim().toLowerCase();
+    this.dataSource.filter = filtro;
+  }
   ngOnInit(): void {
     this.productoService.listarProductos().subscribe({
       next: (data) => {
-        console.log('Productos obteneidos', data)
+        console.log('Productos obteneidos', data);
         this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.paginator; 
+        this.dataSource.paginator = this.paginator;
       },
       error: (err) => {
-        console.log('Error', err)
-      }
-    })
+        console.log('Error', err);
+      },
+    });
   }
 
   abrirModalProducto(p: Producto) {
     this.dialog.open(DetailsProductoComponent, {
-      width: '500px',
-      data: p
-    })
+      data: p,
+      panelClass: 'custom-modal-container', 
+      maxWidth: '100vw', 
+      autoFocus: false, 
+    });
   }
 
-
-
   abrirModelDesactivar(p: Producto) {
-    this.dialog.open(DesactivarProductoComponent, {
-      width: '500px',
-      data: p
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.ngOnInit();
-      }
-    });
+    this.dialog
+      .open(DesactivarProductoComponent, {
+        width: '500px',
+        data: p,
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.ngOnInit();
+        }
+      });
   }
 }

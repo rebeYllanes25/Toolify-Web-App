@@ -47,20 +47,17 @@ public class ProductoController {
 	}
 
 	
-	@PostMapping(value="/registrar", consumes ={"multipart/form-data"}) //multipart para q pueda aceptar archivos 
-	public ResponseEntity<?> RegistrarProducto(@ModelAttribute Producto producto) {
-		try {
-			if(producto.getImagen()!= null && !producto.getImagen().isEmpty()) {
-				producto.setImagenBytes(producto.getImagen().getBytes());
-			}
-
-			producto.setFechaRegistro(LocalDateTime.now());
-			producto.setEstado(true);
-			return ResponseEntity.ok(prdService.RegistrarProducto(producto));
-		}catch (Exception e) {
-			  return ResponseEntity.status(500).body("Error registrando producto: " + e.getMessage());
-		}
+	@PostMapping("/registrar")
+	public ResponseEntity<?> RegistrarProducto(@RequestBody Producto producto) {
+	    try {
+	        producto.setFechaRegistro(LocalDateTime.now());
+	        producto.setEstado(true);
+	        return ResponseEntity.ok(prdService.RegistrarProducto(producto));
+	    } catch (Exception e) {
+	        return ResponseEntity.status(500).body("Error registrando producto: " + e.getMessage());
+	    }
 	}
+
 
 	@PutMapping("/actualizar/{id}")
 	public ResponseEntity<?> ActualizarProducto(

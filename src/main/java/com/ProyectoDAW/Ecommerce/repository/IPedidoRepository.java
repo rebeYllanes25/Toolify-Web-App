@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
 
@@ -23,6 +24,8 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
             WHERE p.estado = :estado
         """)
     List<Pedido> listarPedidosPorEstado(@Param("estado") String estado);
+
+    Optional<Pedido> findByVenta_IdVenta(Integer idVenta);
 
     @Query("""
         SELECT DISTINCT p

@@ -76,6 +76,23 @@ public class PedidoService {
         Pedido pedidoActualizado = getPedidoById(idPedido);
         return PedidoMapper.toDTO(pedidoActualizado);
     }
+    
+    
+    @Transactional
+    public PedidoDTO enCaminoPedido(Integer idPedido, Integer idRepartidor) {
+        if (!usuarioRepository.existsById(idRepartidor)) {
+            throw new RuntimeException("Error: El repartidor con ID " + idRepartidor + " no existe.");
+        }
+
+        int exito = pedidoRepository.registrarRepartidor(idPedido, idRepartidor);
+        int exito2 = pedidoRepository.actualizarEstado(idPedido, "EC");
+
+        if (exito == 0 || exito2 == 0) {
+            throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido + " para asignar el repartidor.");
+        }
+        Pedido pedidoActualizado = getPedidoById(idPedido);
+        return PedidoMapper.toDTO(pedidoActualizado);
+    }
 
     public PedidoDTO buscarPedidoPorId(Integer idPedido) {
         Pedido pedido = getPedidoById(idPedido);

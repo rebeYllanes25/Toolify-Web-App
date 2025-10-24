@@ -1,67 +1,182 @@
-<mat-card>
-  <h2>Lista de Productos</h2>
+<div class="crud-container">
+  <!-- Header con título y botón -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h2><i class="fa-solid fa-boxes-stacked me-2"></i>Gestión de Productos</h2>
+        <p class="subtitle">Administra el catálogo de productos del sistema</p>
+      </div>
+      <button class="btn-add" routerLink="createProducto">
+        <i class="fa-solid fa-plus me-2"></i>
+        Agregar Producto
+      </button>
+    </div>
+  </div>
 
-  <button mat-raised-button color="primary" routerLink="createProducto">
-    Agregar Producto
-  </button>
+  <!-- Barra de búsqueda y filtros -->
+  <div class="search-card">
+    <div class="search-wrapper">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar por nombre, categoría o proveedor..."
+        [(ngModel)]="filtroTexto"
+        (input)="aplicarFiltro()">
+    </div>
+    <div class="stats-mini">
+      <div class="stat-item">
+        <i class="fa-solid fa-box"></i>
+        <span>{{ dataSource?.data?.length || 0 }} productos</span>
+      </div>
+    </div>
+  </div>
 
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
+  <!-- Tabla de productos -->
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" class="products-table">
 
-    <!-- ID -->
-    <ng-container matColumnDef="idProducto">
-      <th mat-header-cell *matHeaderCellDef> ID </th>
-      <td mat-cell *matCellDef="let p"> {{p.idProducto}} </td>
-    </ng-container>
+      <!-- ID -->
+      <ng-container matColumnDef="idProducto">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-hashtag me-1"></i>
+            ID
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let p">
+          <span class="badge-id">{{ p.idProducto }}</span>
+        </td>
+      </ng-container>
 
-    <!-- Nombre -->
-    <ng-container matColumnDef="nombre">
-      <th mat-header-cell *matHeaderCellDef> Nombre </th>
-      <td mat-cell *matCellDef="let p"> {{p.nombre}} </td>
-    </ng-container>
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-tag me-1"></i>
+            Producto
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let p">
+          <div class="product-info">
+            <i class="fa-solid fa-box product-icon"></i>
+            <span class="product-name">{{ p.nombre }}</span>
+          </div>
+        </td>
+      </ng-container>
 
-    <!-- Proveedor -->
-    <ng-container matColumnDef="proveedor">
-      <th mat-header-cell *matHeaderCellDef> Proveedor </th>
-      <td mat-cell *matCellDef="let p"> {{p.proveedor?.razonSocial}} </td>
-    </ng-container>
+      <ng-container matColumnDef="proveedor">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-truck me-1"></i>
+            Proveedor
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let p">
+          <div class="supplier-info">
+            <i class="fa-solid fa-building me-2"></i>
+            {{ p.proveedor?.razonSocial || 'N/A' }}
+          </div>
+        </td>
+      </ng-container>
 
-    <!-- Categoria -->
-    <ng-container matColumnDef="categoria">
-      <th mat-header-cell *matHeaderCellDef> Categoría </th>
-      <td mat-cell *matCellDef="let p"> {{p.categoria?.descripcion}} </td>
-    </ng-container>
+      <ng-container matColumnDef="categoria">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-layer-group me-1"></i>
+            Categoría
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let p">
+          <span class="category-badge">
+            {{ p.categoria?.descripcion || 'Sin categoría' }}
+          </span>
+        </td>
+      </ng-container>
 
-    <!-- Precio -->
-    <ng-container matColumnDef="precio">
-      <th mat-header-cell *matHeaderCellDef> Precio </th>
-      <td mat-cell *matCellDef="let p"> {{p.precio}} </td>
-    </ng-container>
+      <ng-container matColumnDef="precio">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-dollar-sign me-1"></i>
+            Precio
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let p">
+          <span class="price-tag">S/ {{ p.precio | number:'1.2-2' }}</span>
+        </td>
+      </ng-container>
 
-    <!-- Stock -->
-    <ng-container matColumnDef="stock">
-      <th mat-header-cell *matHeaderCellDef> Stock </th>
-      <td mat-cell *matCellDef="let p"> {{p.stock}} </td>
-    </ng-container>
+      <ng-container matColumnDef="stock">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-cubes me-1"></i>
+            Stock
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let p">
+          <span class="stock-badge" [ngClass]="{
+            'stock-high': p.stock > 50,
+            'stock-medium': p.stock > 10 && p.stock <= 50,
+            'stock-low': p.stock > 0 && p.stock <= 10,
+            'stock-empty': p.stock === 0
+          }">
+            <i class="fa-solid fa-circle"></i>
+            {{ p.stock }}
+          </span>
+        </td>
+      </ng-container>
 
-    <!-- Acciones -->
-    <ng-container matColumnDef="acciones">
-      <th mat-header-cell *matHeaderCellDef> Acciones </th>
-      <td mat-cell *matCellDef="let p">
-        <button mat-button color="accent" [routerLink]="['/admin/crudProducto/editProducto/',p.idProducto]">
-          Editar
-        </button>
-        <button mat-button color="accent" (click)="abrirModalProducto(p)">Detalles</button>
-        <button mat-button color="warn" (click)="abrirModelDesactivar(p)">Desactivar</button>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-gear me-1"></i>
+            Acciones
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let p">
+          <div class="action-buttons">
+            <button 
+              class="btn-action btn-edit" 
+              [routerLink]="['/admin/crudProducto/editProducto/', p.idProducto]"
+              matTooltip="Editar producto">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button 
+              class="btn-action btn-details" 
+              (click)="abrirModalProducto(p)"
+              matTooltip="Ver detalles">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+            <button 
+              class="btn-action btn-delete" 
+              (click)="abrirModelDesactivar(p)"
+              matTooltip="Desactivar">
+              <i class="fa-solid fa-ban"></i>
+            </button>
+          </div>
+        </td>
+      </ng-container>
 
-    <!-- Filas -->
-    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+      <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas;" class="table-row"></tr>
+    </table>
 
-  </table>
+    <div class="no-data" *ngIf="!dataSource || dataSource.data?.length === 0">
+      <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+      <p>No hay productos registrados</p>
+      <small>Comienza agregando tu primer producto</small>
+      <button class="btn-add-empty" routerLink="createProducto">
+        <i class="fa-solid fa-plus me-2"></i>
+        Agregar Producto
+      </button>
+    </div>
+  </div>
 
-  <!-- paginator -->
-  <mat-paginator [pageSizeOptions]="[5,10]" [pageSize]="10" showFirstLastButtons>
-  </mat-paginator>
-</mat-card>
+  <div class="paginator-wrapper">
+    <mat-paginator 
+      [pageSizeOptions]="[5, 10, 25, 50]" 
+      [pageSize]="10" 
+      showFirstLastButtons
+      aria-label="Selecciona página">
+    </mat-paginator>
+  </div>
+</div>

@@ -14,11 +14,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
 import com.ProyectoDAW.Ecommerce.model.Usuario;
 import com.ProyectoDAW.Ecommerce.service.UsuarioService;
 import com.ProyectoDAW.Ecommerce.util.JwtUtil;
@@ -71,5 +72,16 @@ public class AuthController {
         return ResponseEntity.ok(usuario); // Devuelve directamente el objeto Usuario
     }
 
-
+	@PostMapping("/register")
+	public ResponseEntity<?> registerUser(@RequestBody Usuario user)
+	{
+	    ResultadoResponse resultado = usuarioService.createUser(user);
+	    if (resultado.isValor()) {
+	        return ResponseEntity.ok(resultado);
+	    } else {
+	        return ResponseEntity
+	                .status(HttpStatus.BAD_REQUEST)
+	                .body(resultado);
+	    }
+	}
 }

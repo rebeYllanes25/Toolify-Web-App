@@ -34,7 +34,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
 
         String path = request.getServletPath();
-        if ("/auth/login".equals(path) || "/cliente/index".equals(path) || "/cliente/producto".equals(path)) {
+        if ("/auth/login".equals(path) || "/auth/register".equals(path) || "/cliente/index".equals(path) || "/cliente/producto".equals(path) ||
+        		"/distrito/list".equals(path))  {
             chain.doFilter(request, response);
             return;
         }

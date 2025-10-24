@@ -8,16 +8,15 @@ import { Proveedor } from '../../shared/model/proveedor.model';
 // Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableDataSource,MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 //import MODAL proveedor
-import { MatDialog } from '@angular/material/dialog'
+import { MatDialog } from '@angular/material/dialog';
 import { DetailsProveedorComponent } from './details/details.component';
 import { DesactivarProveedorComponent } from './desactivar-proveedor/desactivar-proveedor.component';
-
 
 @Component({
   selector: 'app-crudProveedor',
@@ -32,49 +31,64 @@ import { DesactivarProveedorComponent } from './desactivar-proveedor/desactivar-
     MatButtonModule,
     MatTableModule,
     MatInputModule,
-    MatPaginatorModule
-  ]
+    MatPaginatorModule,
+  ],
 })
 export class CrudProveedorComponent implements OnInit {
+  filtroTexto: string = '';
 
+  aplicarFiltro() {
+    const filtro = this.filtroTexto.trim().toLowerCase();
+    this.dataSource.filter = filtro;
+  }
   dataSource = new MatTableDataSource<Proveedor>([]);
-  columnas = ['idProveedor', 'ruc', 'razonSocial', 'telefono', 'distrito', 'acciones'];
+  columnas = [
+    'idProveedor',
+    'ruc',
+    'razonSocial',
+    'telefono',
+    'distrito',
+    'acciones',
+  ];
 
- @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private proveedorService: ProveedorService,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.proveedorService.listarProveedor().subscribe({
       next: (data) => {
         console.log('Proveedores:', data);
         this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.paginator; 
+        this.dataSource.paginator = this.paginator;
       },
-      error: (err) => console.log(err)
+      error: (err) => console.log(err),
     });
   }
 
   abrirModal(p: Proveedor) {
     this.dialog.open(DetailsProveedorComponent, {
-      width: '400px',
-      data: p
-    })
-  }
-
-
-  abrirModelDesactivar(p: Proveedor) {
-    this.dialog.open(DesactivarProveedorComponent, {
-      width: '500px',
-      data: p
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.ngOnInit();
-      }
+      data: p,
+      panelClass: 'custom-modal-container',
+      maxWidth: '95vw',
+      autoFocus: false,
     });
   }
 
-};
+  abrirModelDesactivar(p: Proveedor) {
+    this.dialog
+      .open(DesactivarProveedorComponent, {
+        width: '500px',
+        data: p,
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.ngOnInit();
+        }
+      });
+  }
+}

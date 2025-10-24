@@ -1,27 +1,25 @@
-import { Component } from '@angular/core';
-
-//service
+import { Component, OnInit } from '@angular/core';
 import { ProductoServiceService } from '../../service/producto-service.service';
-
-//formulario
+import { CategoriaServiceService } from '../../service/categoria-service.service';
+import { ProveedorService } from '../../service/proveedorService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-//entidad
 import { Producto } from '../../../shared/model/producto.model';
-//angular material
-import { MatCardModule} from '@angular/material/card';
+import { Categoria } from '../../../shared/model/categoria.model';
+import { Proveedor } from '../../../shared/model/proveedor.model';
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
-
-//alert IZI_TOAST_ALERT
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { AlertIziToast } from '../../../util/iziToastAlert.service';
-
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-create-producto',
-  standalone : true,
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -29,65 +27,102 @@ import { AlertIziToast } from '../../../util/iziToastAlert.service';
     MatCardModule,
     MatButtonModule,
     MatTableModule,
-    MatInputModule
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   templateUrl: './create-producto.component.html',
-  styleUrl: './create-producto.component.css'
+  styleUrls: ['./create-producto.component.css']
 })
-export class CreateProductoComponent {
+export class CreateProductoComponent implements OnInit {
 
-  producto:Producto = {
-      nombre: '',
-      descripcion: '',
-      proveedor:{
-        idProveedor :0,
-        distrito :{
-          idDistrito :0,
-          nombre : ''
-        }
-      },
-      categoria:{idCategoria:0,descripcion:''},
-      precio:0,
-      stock:0,
-      fechaRegistro:'',
-      estado:true
-  }
-  imagenFile?:File
+  producto: Producto = {
+    nombre: '',
+    descripcion: '',
+    proveedor: { idProveedor: 0, distrito: { idDistrito: 0, nombre: '' } },
+    categoria: { idCategoria: 0, descripcion: '' },
+    precio: 0,
+    stock: 0,
+    imagenBytes: '',
+    base64Img: '',
+    fechaRegistro: '',
+    estado: true
+  };
 
-  constructor (
-    private productoService:ProductoServiceService,
+  categorias$!: Observable<Categoria[]>;
+  proveedores$!: Observable<Proveedor[]>;
+
+  imagenPreview: string | null = null;
+
+  constructor(
+    private productoService: ProductoServiceService,
+    private categoriaService: CategoriaServiceService,
+    private proveedorService: ProveedorService,
     private router: Router
-  ){}
+  ) {}
 
-  onFileSelect(event:any){
-    this.imagenFile = event.target.files[0]
+  ngOnInit(): void {
+    this.categorias$ = this.categoriaService.listaCategorias();
+    this.proveedores$ = this.proveedorService.listarProveedor();
   }
 
-  guardarProveedor():void{
+  // Manejar selección de imagen
+  onFileSelect(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = (reader.result as string).split(',')[1]; // solo la parte base64
+        this.producto.base64Img = base64;
+        this.producto.imagenBytes = base64;
+        this.imagenPreview = reader.result as string; // para preview
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
-    const formData = new FormData();
+  // Eliminar imagen seleccionada
+  removeImage(event: Event) {
+    event.stopPropagation();
+    this.imagenPreview = null;
+    this.producto.imagenBytes = '';
+    this.producto.base64Img = '';
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  }
 
-    formData.append('nombre',this.producto.nombre); 
-    formData.append('descripcion',this.producto.descripcion);
-    formData.append('proveedor.idProveedor',this.producto.proveedor.idProveedor!.toString());
-    formData.append('categoria.idCategoria',this.producto.categoria.idCategoria!.toString());
-    formData.append('precio',this.producto.precio.toString());
-    formData.append('stock',this.producto.stock.toString());
+  // Validar formulario
+  formularioValido(): boolean {
+    return !!(
+      this.producto.nombre &&
+      this.producto.descripcion &&
+      this.producto.proveedor?.idProveedor &&
+      this.producto.categoria?.idCategoria &&
+      this.producto.precio >= 0 &&
+      this.producto.stock >= 0
+    );
+  }
 
-    if(this.imagenFile){
-      formData.append('imagen', this.imagenFile);
+  // Guardar producto
+  guardarProducto(): void {
+    if (!this.formularioValido()) {
+      AlertIziToast.warning('Por favor completa todos los campos requeridos.');
+      return;
     }
 
-    this.productoService.createProducto(formData).subscribe({
-      next: (data) =>{
-        this.producto = data
-        console.log("Producto Creado" + data)
-        AlertIziToast.success(`Se guardo el producto ${this.producto.nombre} codigo:${this.producto.idProducto}`)
-        this.router.navigate(['/admin/crudProducto/'])
+    this.producto.fechaRegistro = new Date().toISOString();
+    this.producto.estado = true;
+
+    this.productoService.createProducto(this.producto).subscribe({
+      next: (data) => {
+        this.producto = data;
+        AlertIziToast.success(`Se guardó el producto ${this.producto.nombre} código: ${this.producto.idProducto}`);
+        this.router.navigate(['/admin/crudProducto']);
       },
-      error : (err) =>{
-        console.log("Error: ", err)
+      error: (err) => {
+        console.log('Error:', err);
+        AlertIziToast.warning('Error al guardar el producto.');
       }
-    })
+    });
   }
 }

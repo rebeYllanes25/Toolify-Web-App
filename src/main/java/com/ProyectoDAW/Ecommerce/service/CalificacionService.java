@@ -78,4 +78,12 @@ public class CalificacionService {
         Calificacion guardada = calificacionRepository.save(calificacion);
         return CalificacionMapper.toDTO(guardada);
     }
+    
+    
+    
+    public boolean pedidoYaCalificado(Integer idPedido) {
+    	return calificacionRepository.existsByPedidoIdPedido(idPedido);
+    }
+    
+    
 }

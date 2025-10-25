@@ -15,4 +15,7 @@ public interface ICalificacionRepository extends JpaRepository<Calificacion, Int
     
     @Query("SELECT AVG(c.puntuacion) FROM Calificacion c WHERE c.repartidor.idUsuario = :idRepartidor")
     Double obtenerPromedioRepartidor(@Param("idRepartidor") Integer idRepartidor);
+    
+    
+    
 }

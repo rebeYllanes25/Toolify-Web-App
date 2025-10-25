@@ -37,6 +37,19 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
     """)
     List<Pedido> listarPedidosPorClienteYEstado(@Param("idCliente") Integer idCliente,
                                                 @Param("estado") String estado);
+    
+    @Query("""
+            SELECT DISTINCT p
+            FROM Pedido p
+            JOIN FETCH p.venta v
+            JOIN FETCH v.usuario u
+            LEFT JOIN v.detalles d
+            LEFT JOIN d.producto prod
+            LEFT JOIN FETCH p.repartidor r
+            WHERE u.idUsuario = :idCliente AND
+            p.estado = "PE" OR p.estado = "EC"
+        """)
+        List<Pedido> listarPedidosPorClienteInicio(@Param("idCliente") Integer idCliente);
 
     
     @Query("""

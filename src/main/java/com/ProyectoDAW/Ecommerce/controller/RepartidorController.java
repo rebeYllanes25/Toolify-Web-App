@@ -29,6 +29,14 @@ public class RepartidorController {
         PedidoDTO pedido = pedidoService.registrarRepartidor(idPedido, idRepartidor);
         return ResponseEntity.ok(pedido);
     }
+    
+    @PutMapping("/encamino/{idPedido}")
+    public ResponseEntity<PedidoDTO> enCaminoPedido(
+            @PathVariable Integer idPedido,
+            @RequestParam Integer idRepartidor) {
+        PedidoDTO pedido = pedidoService.enCaminoPedido(idPedido, idRepartidor);
+        return ResponseEntity.ok(pedido);
+    }
 
     @PutMapping("/{idPedido}/estado")
     public ResponseEntity<PedidoDTO> actualizarEstado(

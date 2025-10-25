@@ -1,6 +1,5 @@
 package com.ProyectoDAW.Ecommerce.repository;
 
-import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,8 +24,6 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
         """)
     List<Pedido> listarPedidosPorEstado(@Param("estado") String estado);
 
-    Optional<Pedido> findByVenta_IdVenta(Integer idVenta);
-
     @Query("""
         SELECT DISTINCT p
         FROM Pedido p
@@ -41,6 +38,20 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
     List<Pedido> listarPedidosPorClienteYEstado(@Param("idCliente") Integer idCliente,
                                                 @Param("estado") String estado);
 
+    
+    @Query("""
+            SELECT DISTINCT p
+            FROM Pedido p
+            JOIN FETCH p.venta v
+            JOIN FETCH v.usuario u
+            LEFT JOIN v.detalles d
+            LEFT JOIN d.producto prod
+            LEFT JOIN FETCH p.repartidor r
+            WHERE u.idUsuario = :idCliente
+        """)
+        List<Pedido> listarPedidosPorCliente(@Param("idCliente") Integer idCliente);
+    
+    
     @Modifying
     @Transactional
     @Query("""
@@ -81,5 +92,8 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
         ORDER BY EXTRACT(MONTH FROM v.fecha)
         """, nativeQuery = true)
     List<Object[]> resumenMensualVentasPedidos(@Param("anio") int anio);
+    
+    Optional<Pedido> findByVenta_IdVenta(Integer idVenta);
+
 
 }

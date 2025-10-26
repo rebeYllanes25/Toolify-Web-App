@@ -181,9 +181,6 @@ VALUES
 ('Lucía','Campos','Reyes','lucia.campos@example.com','clave123','55667788','Jr. Los Álamos 159',3,'987654329',4), --Repartidor 5
 ('Rosa','Gutiérrez','Salas','rosa.gutierrez@example.com','clave123','66778899','Av. Primavera 753',2,'987654330',4); --Repartidor 6
 
-
-select * from tb_usuario
-
 INSERT INTO TB_PROVEEDOR (RUC, RAZON_SOCIAL, TELEFONO, DIRECCION, ID_DISTRITO)
 VALUES
 ('20123456781','Ferretería El Maestro','014567890','Av. Constructores 123',1),

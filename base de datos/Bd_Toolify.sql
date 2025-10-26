@@ -102,8 +102,15 @@ CREATE TABLE TB_PEDIDO (
     OBSERVACIONES TEXT,
     FOREIGN KEY (ID_VENTA) REFERENCES TB_VENTA(ID_VENTA),
     FOREIGN KEY (ID_REPARTIDOR) REFERENCES TB_USUARIO(ID_USUARIO),
-    CONSTRAINT CHK_ESTADO_PEDIDO CHECK (ESTADO IN ('PE','AS','EC','EN','FA')),
+    CONSTRAINT CHK_ESTADO_PEDIDO CHECK (ESTADO IN ('PE','AS','EC','CR','EN','FA')),
     CONSTRAINT CHK_MOVILIDAD CHECK (MOVILIDAD IN ('M', 'A'))
+	--leyenda de estados
+	--PE -> PENDIENTE
+	--AS -> ASIGNADO(aceptado) 
+	--EC -> EN CAMINO
+	--CR -> CERCA
+	--EN -> ENTREGADO
+	--FA -> FALLIDO
 );
 
 CREATE TABLE TB_CALIFICACION (
@@ -156,19 +163,26 @@ INSERT INTO TB_ROL (DESCRIPCION) VALUES
 INSERT INTO TB_USUARIO (NOMBRES, APE_PATERNO, APE_MATERNO, CORREO, CLAVE, NRO_DOC, DIRECCION, ID_DISTRITO, TELEFONO, ROL)
 VALUES
 -- Registros existentes
-('Luis','Pérez','García','luis.perez@example.com','clave123','12345678','Av. Lima 123',1,'987654321',1),
-('María','Ramírez','Lopez','maria.ramirez@example.com','clave123','23456789','Calle Real 456',2,'987654322',2),
-('Juan','Gonzales','Meza','juan.gonzales@example.com','clave123','34567890','Jr. Perú 789',3,'987654323',3),
-('Ana','Torres','Díaz','ana.torres@example.com','clave123','45678901','Psje. Andino 012',4,'987654324',4),
+('Luis','Pérez','García','luis.perez@example.com','clave123','12345678','Av. Lima 123',1,'987654321',1), --Administrador
 
--- Nuevos registros para completar 3 con rol 2 y 3 con rol 4
-('Carlos','Sánchez','Morales','carlos.sanchez@example.com','clave123','11223344','Av. Grau 789',3,'987654325',2),
-('Elena','Huerta','Campos','elena.huerta@example.com','clave123','22334455','Jr. Las Flores 321',4,'987654326',2),
-('Pedro','Mendoza','Cruz','pedro.mendoza@example.com','clave123','33445566','Av. Bolívar 987',2,'987654327',2),
-('Jorge','Rojas','Vega','jorge.rojas@example.com','clave123','44556677','Calle Central 654',1,'987654328',4),
-('Lucía','Campos','Reyes','lucia.campos@example.com','clave123','55667788','Jr. Los Álamos 159',3,'987654329',4),
-('Rosa','Gutiérrez','Salas','rosa.gutierrez@example.com','clave123','66778899','Av. Primavera 753',2,'987654330',4);
+('María','Ramírez','Lopez','maria.ramirez@example.com','clave123','23456789','Calle Real 456',2,'987654322',2), --Cliente 1
+('Rebeca','Yllanes','Chavez','rebeca.yllanes@gmail.com','rebeca123','75454532','Av. Riva Agüero 345 ',3,'908955357',2),--Cliente  2
+('Victor','Narazas','Garcia','victor.narazas@gmail.com','victor123','56876765','Av. Angamos 234',3,'928845092',2),--Cliente  3
+('Carlos','Sánchez','Morales','carlos.sanchez@example.com','clave123','11223344','Av. Grau 789',3,'987654325',2), --cliente 4
+('Elena','Huerta','Campos','elena.huerta@example.com','clave123','22334455','Jr. Las Flores 321',4,'987654326',2), --cliente 5
+('Pedro','Mendoza','Cruz','pedro.mendoza@example.com','clave123','33445566','Av. Bolívar 987',2,'987654327',2), -- cliente 6
 
+('Juan','Gonzales','Meza','juan.gonzales@example.com','clave123','34567890','Jr. Perú 789',3,'987654323',3), --Vendedor 1
+
+('Ana','Torres','Díaz','ana.torres@example.com','clave123','45678901','Psje. Andino 012',4,'987654324',4), -- Repartidor 1
+('Andy','Valdivia','Centeno','andy.centeno@gmail.com','andy123','76987423','Av. Riva Agüero 234',2,'937150514',4),--Repartidor 2
+('Jose','Julca','Chumpitaz','jose.julca@gmail.com','jose123','75454531','Av. Inka Garcilaso de la Vega 123',2,'986425458',4),--Repartidor 3
+('Jorge','Rojas','Vega','jorge.rojas@example.com','clave123','44556677','Calle Central 654',1,'987654328',4), --Repartidor 4
+('Lucía','Campos','Reyes','lucia.campos@example.com','clave123','55667788','Jr. Los Álamos 159',3,'987654329',4), --Repartidor 5
+('Rosa','Gutiérrez','Salas','rosa.gutierrez@example.com','clave123','66778899','Av. Primavera 753',2,'987654330',4); --Repartidor 6
+
+
+select * from tb_usuario
 
 INSERT INTO TB_PROVEEDOR (RUC, RAZON_SOCIAL, TELEFONO, DIRECCION, ID_DISTRITO)
 VALUES

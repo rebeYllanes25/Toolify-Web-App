@@ -73,7 +73,7 @@
         <div class="current-image-section" *ngIf="!imagenPreview">
           <label class="image-label">Imagen Actual</label>
           <div class="image-display">
-            <img *ngIf="producto.base64Img; else noImageTpl" [src]="'data:image/jpeg;base64,' + producto.base64Img"
+            <img *ngIf="producto.imagen; else noImageTpl" [src]="producto.imagen"
               alt="Imagen del producto" class="current-image" />
 
             <ng-template #noImageTpl>

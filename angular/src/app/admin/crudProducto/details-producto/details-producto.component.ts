@@ -26,8 +26,8 @@ import { Producto } from '../../../shared/model/producto.model';
         <!-- Imagen del producto -->
         <div class="image-section">
           <div class="image-wrapper">
-            <img *ngIf="data.base64Img; else noImageTpl" 
-                 [src]="'data:image/jpeg;base64,' + data.base64Img" 
+            <img *ngIf="data.imagen; else noImageTpl" 
+                 [src]="data.imagen" 
                  alt="Imagen del producto" 
                  class="product-image" />
 
@@ -242,7 +242,7 @@ import { Producto } from '../../../shared/model/producto.model';
     .product-image {
       width: 100%;
       height: 300px;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
     }
 

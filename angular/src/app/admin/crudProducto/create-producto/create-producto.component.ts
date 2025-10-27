@@ -43,8 +43,7 @@ export class CreateProductoComponent implements OnInit {
     categoria: { idCategoria: 0, descripcion: '' },
     precio: 0,
     stock: 0,
-    imagenBytes: '',
-    base64Img: '',
+    imagen: '',
     fechaRegistro: '',
     estado: true
   };
@@ -53,6 +52,7 @@ export class CreateProductoComponent implements OnInit {
   proveedores$!: Observable<Proveedor[]>;
 
   imagenPreview: string | null = null;
+  imagenFile:  File | null = null;
 
   constructor(
     private productoService: ProductoServiceService,
@@ -66,32 +66,28 @@ export class CreateProductoComponent implements OnInit {
     this.proveedores$ = this.proveedorService.listarProveedor();
   }
 
-  // Manejar selección de imagen
+ 
   onFileSelect(event: any) {
     const file: File = event.target.files[0];
     if (file) {
+      this.imagenFile = file; 
       const reader = new FileReader();
       reader.onload = () => {
-        const base64 = (reader.result as string).split(',')[1]; // solo la parte base64
-        this.producto.base64Img = base64;
-        this.producto.imagenBytes = base64;
-        this.imagenPreview = reader.result as string; // para preview
+        this.imagenPreview = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
 
-  // Eliminar imagen seleccionada
-  removeImage(event: Event) {
+
+   removeImage(event: Event) {
     event.stopPropagation();
     this.imagenPreview = null;
-    this.producto.imagenBytes = '';
-    this.producto.base64Img = '';
+    this.imagenFile = null;
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
   }
 
-  // Validar formulario
   formularioValido(): boolean {
     return !!(
       this.producto.nombre &&
@@ -99,10 +95,10 @@ export class CreateProductoComponent implements OnInit {
       this.producto.proveedor?.idProveedor &&
       this.producto.categoria?.idCategoria &&
       this.producto.precio >= 0 &&
-      this.producto.stock >= 0
+      this.producto.stock >= 0 &&
+      this.imagenFile 
     );
   }
-
   // Guardar producto
   guardarProducto(): void {
     if (!this.formularioValido()) {
@@ -113,7 +109,7 @@ export class CreateProductoComponent implements OnInit {
     this.producto.fechaRegistro = new Date().toISOString();
     this.producto.estado = true;
 
-    this.productoService.createProducto(this.producto).subscribe({
+      this.productoService.createProducto(this.producto, this.imagenFile).subscribe({
       next: (data) => {
         this.producto = data;
         AlertIziToast.success(`Se guardó el producto ${this.producto.nombre} código: ${this.producto.idProducto}`);

@@ -52,6 +52,7 @@ public class PedidoMapper {
                 p.getRepartidor() != null ? p.getRepartidor().getTelefono() : null,	
                 v.getEspecificaciones(),
                 p.getEstado()
+                
         );
     }
 }

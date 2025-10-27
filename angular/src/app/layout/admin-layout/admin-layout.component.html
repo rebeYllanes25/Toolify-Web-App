@@ -9,26 +9,32 @@
             Admin Panel
           </h5>
         </div>
-        
+
         <ul class="nav flex-column sidebar-nav">
           <li class="nav-item">
             <a class="nav-link" routerLink="/admin/dashboard">
               <i class="fa-solid fa-chart-line"></i>
               <span>Dashboard</span>
-            </a>   
+            </a>
           </li>
-          
+
           <li class="nav-item">
             <a class="nav-link" routerLink="/admin/crudProveedor">
               <i class="fa-solid fa-truck"></i>
               <span>Proveedores</span>
             </a>
           </li>
-          
+
           <li class="nav-item">
             <a class="nav-link" routerLink="crudProducto">
               <i class="fa-solid fa-box"></i>
               <span>Productos</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="pedidos">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span>Pedido</span>
             </a>
           </li>
 
@@ -40,17 +46,13 @@
             <div class="submenu" [ngClass]="{ 'show': isReportesOpen }">
               <ul>
                 <li>
-                  <a routerLink="/admin/reportes/reporteStock" 
-                     class="nav-link" 
-                     (click)="cerrarMenu()">
+                  <a routerLink="/admin/reportes/reporteStock" class="nav-link" (click)="cerrarMenu()">
                     <i class="fa-solid fa-boxes-stacked"></i>
                     Stock de Productos
                   </a>
                 </li>
                 <li>
-                  <a routerLink="/admin/reportes/reporteVenta" 
-                     class="nav-link" 
-                     (click)="cerrarMenu()">
+                  <a routerLink="/admin/reportes/reporteVenta" class="nav-link" (click)="cerrarMenu()">
                     <i class="fa-solid fa-chart-column"></i>
                     Ventas
                   </a>

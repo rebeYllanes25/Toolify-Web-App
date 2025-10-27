@@ -21,6 +21,12 @@ public class RepartidorController {
         List<PedidoDTO> pedidos = pedidoService.listarPedidosPendientes();
         return ResponseEntity.ok(pedidos);
     }
+    
+    @GetMapping("/aceptados")
+    public ResponseEntity<List<PedidoDTO>> listarPedidosAceptados() {
+        List<PedidoDTO> pedidos = pedidoService.listarPedidosAceptados();
+        return ResponseEntity.ok(pedidos);
+    }
 
     @PutMapping("/asignar/{idPedido}")
     public ResponseEntity<PedidoDTO> registrarRepartidor(

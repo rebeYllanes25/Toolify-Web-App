@@ -1,4 +1,4 @@
-package com.ProyectoDAW.Ecommerce.dto;
+package com.ProyectoDAW.Ecommerce.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

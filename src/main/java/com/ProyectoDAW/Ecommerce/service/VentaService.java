@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ProyectoDAW.Ecommerce.dto.DetalleVentaDTO;
-import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.response.ResultadoResponse;
 import com.ProyectoDAW.Ecommerce.dto.UsuarioDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario;
@@ -42,6 +42,9 @@ public class VentaService {
 	
 	@Autowired
 	private IDetalleVentaRepository detalleVentaRepository;
+
+    @Autowired
+    private NotificacionService notificacionService;
 
 	public List<VentaDTO> getVentasPorUsuario(Integer idUsuario) {
 		List<Venta> ventas = ventaRepository.findByUsuarioId(idUsuario);
@@ -153,7 +156,14 @@ public class VentaService {
                 pedido.setEstado("PE");                              
 
                 venta.setPedido(pedido);
-                
+
+                String tipoNotificacion = mapearEstadoATipo("PE");
+                notificacionService.crearYEnviarNotificacion(
+                        pedido.getVenta().getUsuario(),
+                        pedido,
+                        tipoNotificacion
+                );
+
             } else {
                 venta.setPedido(null);
             }
@@ -268,6 +278,18 @@ public class VentaService {
         } catch (Exception e) {
             return new ResultadoResponse(false, "Error al cancelar la venta: " + e.getMessage());
         }
+    }
+
+    private String mapearEstadoATipo(String estado) {
+        return switch (estado.toUpperCase()) {
+            case "PE" -> "PEDIDO_PENDIENTE";
+            case "AS" -> "PEDIDO_ACEPTADO";
+            case "EC" -> "PEDIDO_EN_CAMINO";
+            case "CR" -> "PEDIDO_CERCA";
+            case "EN" -> "PEDIDO_ENTREGADO";
+            case "FA", "CANCELADO" -> "PEDIDO_FALLIDO";
+            default -> "PEDIDO_PENDIENTE";
+        };
     }
 
     

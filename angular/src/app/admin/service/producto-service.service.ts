@@ -19,16 +19,42 @@ export class ProductoServiceService {
     return this.http.get<Producto[]>(`${this.url}/index`);
   }
 
-  createProducto(producto: Producto): Observable<any> {
-    return this.http.post<Producto>(`${this.url}/registrar`, producto);
+  createProducto(producto: Producto, imagenFile: File | null): Observable<any> {
+     const formData = new FormData();
+    
+    formData.append('nombre', producto.nombre);
+    formData.append('descripcion', producto.descripcion);
+    formData.append('precio', producto.precio.toString());
+    formData.append('stock', producto.stock.toString());
+    formData.append('proveedor.idProveedor', producto.proveedor.idProveedor!!.toString());
+    formData.append('categoria.idCategoria', producto.categoria.idCategoria.toString());
+    
+    if (imagenFile) {
+      formData.append('imagenUrl', imagenFile);
+    }
+    
+    return this.http.post<Producto>(`${this.url}/registrar`, formData);
   }
 
   detalleProducto(id: number): Observable<Producto> {
     return this.http.get<Producto>(`${this.url}/obtenerId/${id}`);
   }
 
-  actualizarProducto(id: number, producto: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`${this.url}/actualizar/${id}`, producto);
+  actualizarProducto(id: number, producto: Producto, imagenFile: File | null): Observable<Producto> {
+    const formData = new FormData();
+    
+    formData.append('nombre', producto.nombre);
+    formData.append('descripcion', producto.descripcion);
+    formData.append('precio', producto.precio.toString());
+    formData.append('stock', producto.stock.toString());
+    formData.append('proveedor.idProveedor', producto.proveedor.idProveedor!!.toString());
+    formData.append('categoria.idCategoria', producto.categoria.idCategoria.toString());
+    
+    if (imagenFile) {
+      formData.append('imagenUrl', imagenFile);
+    }
+    
+    return this.http.put<Producto>(`${this.url}/actualizar/${id}`, formData);
   }
 
   desactivarProducto(id: number): Observable<string> {

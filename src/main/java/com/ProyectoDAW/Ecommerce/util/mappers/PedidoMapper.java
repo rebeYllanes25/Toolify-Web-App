@@ -25,7 +25,7 @@ public class PedidoMapper {
                         d.getProducto().getIdProducto(),
                         d.getProducto().getNombre(),
                         d.getProducto().getDescripcion(),
-                        d.getProducto().getBase64Img(),
+                        d.getProducto().getImagen(),
                         d.getProducto().getPrecio(),
                         d.getCantidad(),
                         d.getSubTotal()

@@ -1,7 +1,7 @@
 package com.ProyectoDAW.Ecommerce.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,11 @@ import com.ProyectoDAW.Ecommerce.repository.IProductoRepository;
 public class ProductoService {
 	@Autowired
 	private IProductoRepository productoRepository;
+	
+	@Autowired
+	private CloudinaryService _cloudService;
 
+	
 	public Page<Producto> getProducteForCategorie(ProductoFilter filter, Pageable pageable) {
 	    Page<Producto> productPage;
 
@@ -32,19 +36,9 @@ public class ProductoService {
 	    }
 
 	    List<Producto> productos = productPage.getContent();
-	    List<Producto> productosConBase64 = convertImagesToBase64(productos);
-	    return new PageImpl<>(productosConBase64, pageable, productPage.getTotalElements());
+	    return new PageImpl<>(productos, pageable, productPage.getTotalElements());
 	}
 
-	
-	private List<Producto> convertImagesToBase64(List<Producto> productos) {
-	    for (Producto producto : productos) {
-	        if (producto.getImagenBytes() != null) {
-	            producto.setBase64Img(Base64.getEncoder().encodeToString(producto.getImagenBytes()));
-	        }
-	    }
-	    return productos;
-	}
 	
 	public long countProductos() {
 		return productoRepository.count();
@@ -52,12 +46,6 @@ public class ProductoService {
 
 	public List<Producto> obtenerProductosActivos() {
 		List<Producto> productos = productoRepository.findProductosActivos();
-
-		for (Producto producto : productos) {
-			if (producto.getImagenBytes() != null) {
-				producto.setBase64Img(Base64.getEncoder().encodeToString(producto.getImagenBytes()));
-			}
-		}
 		return productos;
 	}
 
@@ -65,16 +53,14 @@ public class ProductoService {
 		return productoRepository.findProductosActivosByCategories(idCategoria);
 	}
 
+	
 	public Producto RegistrarProducto(Producto producto) {
-
-		if (producto.getImagenBytes() == null || producto.getImagenBytes().length == 0) {
-			producto.setImagenBytes(null);
-		}
-
 		return productoRepository.save(producto);
 	}
 
-	public Producto ActualizarProducto(Integer id, Producto producto) {
+	
+	
+	public Producto ActualizarProducto(Integer id, Producto producto) throws IOException {
 		Producto prdUpdate = productoRepository.findById(id).orElseThrow();
 
 		prdUpdate.setNombre(producto.getNombre());
@@ -88,10 +74,10 @@ public class ProductoService {
 		catEncontrado.setIdCategoria(producto.getCategoria().getIdCategoria());
 		prdUpdate.setCategoria(catEncontrado);
 
-		// solo se actualiza si es que el cliente manda una una imagen sino se queda con
-		// la imagen q esta registrada
-		if (producto.getImagenBytes() != null && producto.getImagenBytes().length > 0) {
-			prdUpdate.setImagenBytes(producto.getImagenBytes());
+		
+		if(producto.getImagenUrl() != null && !producto.getImagenUrl().isEmpty()) {
+			String newUrl = _cloudService.upload(producto.getImagenUrl(), "TooLifyWeb/Products");
+			prdUpdate.setImagen(newUrl);	
 		}
 
 		prdUpdate.setPrecio(producto.getPrecio());
@@ -106,10 +92,6 @@ public class ProductoService {
 
 	public Producto ObtenerProductoId(Integer id) {
 		Producto producto = productoRepository.findById(id).orElseThrow();
-		if (producto.getImagenBytes() != null) {
-			producto.setBase64Img(Base64.getEncoder().encodeToString(producto.getImagenBytes()));
-		}
-
 		return producto;
 	}
 

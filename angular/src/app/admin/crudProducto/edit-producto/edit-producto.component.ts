@@ -43,14 +43,19 @@ export class EditProductoComponent implements OnInit {
     categoria: { idCategoria: 0, descripcion: '' },
     precio: 0,
     stock: 0,
-    imagenBytes: '',
-    base64Img: '',
+    imagen: '',
     fechaRegistro: '',
     estado: true,
   };
 
   proveedores$!: Observable<Proveedor[]>;
   categorias$!: Observable<Categoria[]>;
+
+  
+  imagenPreview: string | null = null;
+  imagenFile: File | null = null;
+  imagenCambiada: boolean = false;
+
 
   constructor(
     private productoService: ProductoServiceService,
@@ -61,48 +66,45 @@ export class EditProductoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Cargar listas de proveedores y categorías
     this.proveedores$ = this.proveedorService.listarProveedor();
     this.categorias$ = this.categoriaService.listaCategorias();
 
-    // Cargar producto
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.productoService.detalleProducto(id).subscribe({
       next: (data) => {
         this.producto = data;
+         if (this.producto.imagen) {
+          this.imagenPreview = this.producto.imagen;
+        }
       },
       error: (err) => console.log(err),
     });
   }
 
-  imagenPreview: string | null = null;
-  imagenFile: File | null = null;
-  imagenCambiada: boolean = false;
-
-  onFileSelect(event: any) {
+   onFileSelect(event: any) {
     const file: File = event.target.files[0];
     if (file) {
+      this.imagenFile = file;
+      this.imagenCambiada = true;
+      
       const reader = new FileReader();
-
       reader.onload = () => {
-        const base64 = (reader.result as string).split(',')[1];
-        this.producto.base64Img = base64;
-        this.producto.imagenBytes = base64; // aquí puedes usar lo mismo si tu backend espera bytes en base64
+        this.imagenPreview = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
 
   actualizarProducto() {
-    if (!this.producto.base64Img) {
-      AlertIziToast.warning(
-        'Debes seleccionar una imagen o mantener la actual.'
-      );
+    if (!this.imagenCambiada && !this.producto.imagen) {
+      AlertIziToast.warning('Debes seleccionar una imagen.');
       return;
     }
 
+      const imagenParaEnviar = this.imagenCambiada ? this.imagenFile : null;
+
     this.productoService
-      .actualizarProducto(this.producto.idProducto!, this.producto)
+      .actualizarProducto(this.producto.idProducto!, this.producto, imagenParaEnviar)
       .subscribe({
         next: (data) => {
           AlertIziToast.info(
@@ -110,15 +112,18 @@ export class EditProductoComponent implements OnInit {
           );
           this.router.navigate(['/admin/crudProducto']);
         },
-        error: (err) => console.log('error', err),
+        error: (err) => {
+          console.log('error', err);
+          AlertIziToast.warning('Error al actualizar el producto.');
+        }
       });
   }
 
-  removeImage(event: Event): void {
+ removeImage(event: Event): void {
     event.stopPropagation();
     this.imagenPreview = null;
     this.imagenFile = null;
-    this.imagenCambiada = false;
+    this.imagenCambiada = true; // Marcar que se quitó la imagen
 
     const fileInput = document.querySelector(
       'input[type="file"]'

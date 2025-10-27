@@ -1,4 +1,4 @@
-package com.ProyectoDAW.Ecommerce.dto;
+package com.ProyectoDAW.Ecommerce.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CalificarRequest {
-    private Short puntuacion;
-    private String comentario;
+public class ResultadoResponse {
+	private boolean valor;
+	private String mensaje;
 }

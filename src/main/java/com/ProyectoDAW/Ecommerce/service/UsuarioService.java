@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ProyectoDAW.Ecommerce.dto.PerfilDetalleComprasDto;
-import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.response.ResultadoResponse;
 import com.ProyectoDAW.Ecommerce.model.Rol;
 import com.ProyectoDAW.Ecommerce.model.Usuario;
 import com.ProyectoDAW.Ecommerce.repository.IRolRepository;
@@ -108,5 +108,22 @@ public class UsuarioService implements UserDetailsService{
 	        
 	        return dto;
 	}
+
+    public void actualizarFcmToken(Integer usuarioId, String token) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setFcmToken(token);
+        usuario.setFcmTokenFecha(LocalDateTime.now());
+        usuarioRepository.save(usuario);
+    }
+
+    public void eliminarFcmToken(Integer usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setFcmToken(null);
+        usuarioRepository.save(usuario);
+    }
 	
 }

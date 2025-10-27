@@ -30,6 +30,9 @@ public class PedidoService {
     @Autowired
     private IUsuarioRepository usuarioRepository;
 
+    @Autowired
+    private NotificacionService notificacionService;
+
     private Pedido getPedidoById(Integer idPedido) {
         return pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + idPedido));
@@ -87,6 +90,14 @@ public class PedidoService {
         Pedido pedidoActualizado = getPedidoById(idPedido);
         pedidoActualizado.setFechaAsignacion(LocalDateTime.now());
         pedidoRepository.save(pedidoActualizado);
+
+        String tipoNotificacion = mapearEstadoATipo("AS");
+        notificacionService.crearYEnviarNotificacion(
+                pedidoActualizado.getVenta().getUsuario(),
+                pedidoActualizado,
+                tipoNotificacion
+        );
+
         return PedidoMapper.toDTO(pedidoActualizado);
     }
     
@@ -107,6 +118,12 @@ public class PedidoService {
         if ("EC".equals(pedidoActualizado.getEstado())) {
         	pedidoActualizado.setFechaEnCamino(LocalDateTime.now());
         }
+        String tipoNotificacion = mapearEstadoATipo("EC");
+        notificacionService.crearYEnviarNotificacion(
+                pedidoActualizado.getVenta().getUsuario(),
+                pedidoActualizado,
+                tipoNotificacion
+        );
         
         return PedidoMapper.toDTO(pedidoActualizado);
     }
@@ -151,6 +168,13 @@ public class PedidoService {
         venta.setEstado("E");
         ventaRepository.save(venta);
 
+        String tipoNotificacion = mapearEstadoATipo("EN");
+        notificacionService.crearYEnviarNotificacion(
+                pedido.getVenta().getUsuario(),
+                pedido,
+                tipoNotificacion
+        );
+
         calificacionService.crearRegistroCalificacion(pedido);
 
         return PedidoMapper.toDTO(pedido);
@@ -169,6 +193,18 @@ public class PedidoService {
             pedido.setTiempoEntrega(minutos.shortValue());
             pedidoRepository.save(pedido);
         }
+    }
+
+    private String mapearEstadoATipo(String estado) {
+        return switch (estado.toUpperCase()) {
+            case "PENDIENTE" -> "PEDIDO_PENDIENTE";
+            case "ACEPTADO" -> "PEDIDO_ACEPTADO";
+            case "EN_CAMINO" -> "PEDIDO_EN_CAMINO";
+            case "CERCA" -> "PEDIDO_CERCA";
+            case "ENTREGADO" -> "PEDIDO_ENTREGADO";
+            case "FALLIDO", "CANCELADO" -> "PEDIDO_FALLIDO";
+            default -> "PEDIDO_PENDIENTE";
+        };
     }
 
     // Graficos

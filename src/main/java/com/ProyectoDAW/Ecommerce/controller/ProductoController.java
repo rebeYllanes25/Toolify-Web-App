@@ -16,6 +16,7 @@ import com.ProyectoDAW.Ecommerce.dto.ProductoPorProveedor;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Proveedor;
+import com.ProyectoDAW.Ecommerce.service.CloudinaryService;
 import com.ProyectoDAW.Ecommerce.service.ProductoService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +32,9 @@ public class ProductoController {
 
 	@Autowired
 	ProductoService prdService;
+	
+	@Autowired
+	CloudinaryService _serviceCloud;
 
 	@GetMapping("/index")
 	public List<Producto> ListarProductos() {
@@ -47,28 +51,37 @@ public class ProductoController {
 	}
 
 	
-	@PostMapping("/registrar")
-	public ResponseEntity<?> RegistrarProducto(@RequestBody Producto producto) {
+	@PostMapping(value = "/registrar", consumes = {"multipart/form-data"})
+	public ResponseEntity<?> RegistrarProducto(@ModelAttribute Producto producto) {
 	    try {
 	        producto.setFechaRegistro(LocalDateTime.now());
 	        producto.setEstado(true);
-	        return ResponseEntity.ok(prdService.RegistrarProducto(producto));
+	        
+	        String urlImagen = _serviceCloud.upload(producto.getImagenUrl(), "TooLifyWeb/Products");
+	        
+	        producto.setImagen(urlImagen);
+	        
+	        Producto prdGuardar = prdService.RegistrarProducto(producto);
+	        
+	        return ResponseEntity.ok(prdGuardar);
 	    } catch (Exception e) {
 	        return ResponseEntity.status(500).body("Error registrando producto: " + e.getMessage());
 	    }
 	}
 
 
-	@PutMapping("/actualizar/{id}")
+	@PutMapping(value="/actualizar/{id}", consumes = {"multipart/form-data"})
 	public ResponseEntity<?> ActualizarProducto(
 			@PathVariable Integer id,
-			@RequestBody  Producto producto) {
+			@ModelAttribute  Producto producto) {
 
-		if (id == null || id.longValue() < 0 || producto == null) {
-			return ResponseEntity.badRequest().body("No se pudo actualizar al Proveedor");
+		try {
+			Producto prdActualizar = prdService.ActualizarProducto(id, producto);
+			return ResponseEntity.ok(prdActualizar);
+			
+		} catch (Exception e) {
+			 return ResponseEntity.badRequest().body("Error no se actualizo el producto " + e.getMessage());
 		}
-
-		return ResponseEntity.ok(prdService.ActualizarProducto(id, producto));
 	}
 
 	@PutMapping("/desactivar/{id}")

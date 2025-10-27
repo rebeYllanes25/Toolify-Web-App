@@ -1,21 +1,18 @@
 package com.ProyectoDAW.Ecommerce.controller;
 
 import com.ProyectoDAW.Ecommerce.dto.CalificacionDTO;
-import com.ProyectoDAW.Ecommerce.dto.CalificarRequest;
+import com.ProyectoDAW.Ecommerce.dto.request.CalificarRequest;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResumenMensualVentaPedidoDTO;
-import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
 import com.ProyectoDAW.Ecommerce.service.CalificacionService;
 import com.ProyectoDAW.Ecommerce.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController

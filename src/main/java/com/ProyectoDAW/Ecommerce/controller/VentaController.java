@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ProyectoDAW.Ecommerce.dto.*;
+import com.ProyectoDAW.Ecommerce.dto.response.ResultadoResponse;
 import org.springframework.http.HttpHeaders;
 
 

@@ -2,6 +2,8 @@ package com.ProyectoDAW.Ecommerce.controller;
 
 import com.ProyectoDAW.Ecommerce.dto.NotificacionDTO;
 import com.ProyectoDAW.Ecommerce.dto.request.FcmTokenRequest;
+import com.ProyectoDAW.Ecommerce.model.Usuario;
+import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.service.NotificacionService;
 import com.ProyectoDAW.Ecommerce.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+
+@RestController
+@RequestMapping("/notificacion")
 public class NotificacionController {
 
     @Autowired
@@ -18,13 +23,24 @@ public class NotificacionController {
 
     @Autowired
     private UsuarioService usuarioService;
+    
+    @Autowired
+    private IUsuarioRepository usuarioRepository;
 
     // Registrar/actualizar token FCM
     @PostMapping("/fcm-token")
     public ResponseEntity<?> registrarToken(
-            @RequestParam Integer usuarioId,
-            @RequestBody FcmTokenRequest request
+        @RequestParam Integer usuarioId,
+        @RequestBody FcmTokenRequest request
     ) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        if (!"C".equalsIgnoreCase(usuario.getRol().getDescripcion())) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Solo clientes pueden registrar tokens FCM"));
+        }
+        
         usuarioService.actualizarFcmToken(usuarioId, request.getToken());
         return ResponseEntity.ok(Map.of("message", "Token registrado exitosamente"));
     }

@@ -4,6 +4,7 @@ import com.ProyectoDAW.Ecommerce.dto.CalificacionDTO;
 import com.ProyectoDAW.Ecommerce.dto.request.CalificarRequest;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResumenMensualVentaPedidoDTO;
+import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.service.CalificacionService;
 import com.ProyectoDAW.Ecommerce.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,13 @@ public class PedidoController {
         return ResponseEntity.ok(pedido);
     }
 
+    @GetMapping("/calificacion/{idPedido}")
+    public ResponseEntity<?>buscarCalificacion(@PathVariable Integer idPedido){
+    	ComentarioPuntuacionDTO response = pedidoService.findComentarionPuntuacion(idPedido);
+    	
+    	return ResponseEntity.ok(response);
+
+    }
     
     
     

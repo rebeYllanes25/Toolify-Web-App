@@ -11,12 +11,12 @@
 
             <!-- Imagen + Detalles del producto -->
             <div class="d-flex align-items-start">
-              <ng-container *ngIf="item.producto.base64Img; else imagenLocal">
-                <img [src]="'data:image/png;base64,' + item.producto.base64Img" alt="Producto" width="80" height="80"
+              <ng-container *ngIf="item.producto.imagen; else imagenLocal">
+                <img [src]="item.producto.imagen" alt="Producto" width="80" height="80"
                   class="rounded me-3 object-fit-cover border" />
               </ng-container>
               <ng-template #imagenLocal>
-                <img [src]="'assets/productos/P' + item.producto.idProducto + '.jpg'" (error)="onImageError($event)"
+                <img [src]="item.producto.imagen" (error)="onImageError($event)"
                   alt="Producto" width="80" height="80" class="rounded me-3 object-fit-cover border" />
               </ng-template>
 

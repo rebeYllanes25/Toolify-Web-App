@@ -31,9 +31,9 @@ public class NotificacionService {
             Pedido pedido,
             String tipo
     ) {
-        // Generar título y mensaje según el tipo
-        String titulo = generarTitulo(tipo, pedido.getIdPedido());
-        String mensaje = generarMensaje(tipo, pedido.getIdPedido());
+
+    	String titulo = generarTitulo(tipo, pedido.getNumPedido());
+        String mensaje = generarMensaje(tipo, pedido.getNumPedido());
 
         // Crear el registro en BD
         Notificacion notificacion = new Notificacion();
@@ -49,7 +49,7 @@ public class NotificacionService {
         if (cliente.getFcmToken() != null && !cliente.getFcmToken().isEmpty()) {
             Map<String, String> data = new HashMap<>();
             data.put("notificacionId", saved.getIdNotificacion().toString());
-            data.put("pedidoId", pedido.getIdPedido().toString());
+            data.put("pedidoId", pedido.getNumPedido());
             data.put("tipo", tipo);
             data.put("clienteId", cliente.getIdUsuario().toString());
 
@@ -99,8 +99,8 @@ public class NotificacionService {
     }
 
     private NotificacionDTO convertirADTO(Notificacion n) {
-        String titulo = generarTitulo(n.getTipo(), n.getPedido().getIdPedido());
-        String mensaje = generarMensaje(n.getTipo(), n.getPedido().getIdPedido());
+        String titulo = generarTitulo(n.getTipo(), n.getPedido().getNumPedido());
+        String mensaje = generarMensaje(n.getTipo(), n.getPedido().getNumPedido());
 
         return new NotificacionDTO(
                 n.getIdNotificacion(),
@@ -114,32 +114,32 @@ public class NotificacionService {
         );
     }
 
-    private String generarTitulo(String tipo, Integer idPedido) {
+    private String generarTitulo(String tipo, String nrodPedido) {
         return switch (tipo) {
             case "PEDIDO_PENDIENTE" ->
-                    "Su pedido " + idPedido + " está pendiente";
+                    "Su pedido " + nrodPedido + " está pendiente";
             case "PEDIDO_ACEPTADO" ->
-                    "¡Su pedido " + idPedido + " fue aceptado!";
+                    "¡Su pedido " + nrodPedido + " fue aceptado!";
             case "PEDIDO_EN_CAMINO" ->
-                    "¡Su pedido " + idPedido + " está en camino!";
+                    "¡Su pedido " + nrodPedido + " está en camino!";
             case "PEDIDO_CERCA" ->
-                    "Su pedido " + idPedido + " está cerca. ¡Prepárate!";
+                    "Su pedido " + nrodPedido + " está cerca. ¡Prepárate!";
             case "PEDIDO_ENTREGADO" ->
-                    "¡Tu pedido " + idPedido + " fue entregado exitosamente!";
+                    "¡Tu pedido " + nrodPedido + " fue entregado exitosamente!";
             case "PEDIDO_FALLIDO" ->
-                    "Tu pedido " + idPedido + " fue cancelado";
-            default -> "Notificación del pedido " + idPedido;
+                    "Tu pedido " + nrodPedido + " fue cancelado";
+            default -> "Notificación del pedido " + nrodPedido;
         };
     }
 
-    private String generarMensaje(String tipo, Integer idPedido) {
+    private String generarMensaje(String tipo, String nrodPedido) {
         return switch (tipo) {
             case "PEDIDO_PENDIENTE" ->
-                    "Su pedido está pendiente, por favor verifica el estado en \"Pedidos\".";
+                    "Su pedido está pendiente, por favor verifique el estado en \"Pedidos\".";
             case "PEDIDO_ACEPTADO" ->
-                    "Su pedido fue aceptado y se está empaquetando, verifica el estado en \"Pedidos\".";
+                    "Su pedido fue aceptado y se está empaquetando, verifique el estado en \"Pedidos\".";
             case "PEDIDO_EN_CAMINO" ->
-                    "Nuestro repartidor se encamina con tu pedido, verifica en \"Pedidos\" el estado.";
+                    "Nuestro repartidor se encamina con su pedido, verifique en \"Pedidos\" el estado.";
             case "PEDIDO_CERCA" ->
                     "Su pedido está cerca al destino, favor de ponerse en contacto con nuestro repartidor";
             case "PEDIDO_ENTREGADO" ->

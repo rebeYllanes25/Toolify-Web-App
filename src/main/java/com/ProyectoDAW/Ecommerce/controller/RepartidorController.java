@@ -21,6 +21,12 @@ public class RepartidorController {
         List<PedidoDTO> pedidos = pedidoService.listarPedidosPendientes();
         return ResponseEntity.ok(pedidos);
     }
+    
+    @GetMapping("/aceptados")
+    public ResponseEntity<List<PedidoDTO>> listarPedidosAceptados() {
+        List<PedidoDTO> pedidos = pedidoService.listarPedidosAceptados();
+        return ResponseEntity.ok(pedidos);
+    }
 
     @PutMapping("/asignar/{idPedido}")
     public ResponseEntity<PedidoDTO> registrarRepartidor(
@@ -38,6 +44,14 @@ public class RepartidorController {
         return ResponseEntity.ok(pedido);
     }
 
+    @PutMapping("/cerca/{idPedido}")
+    public ResponseEntity<PedidoDTO> cercaPedido(
+            @PathVariable Integer idPedido) {
+        PedidoDTO pedido = pedidoService.cercaPedido(idPedido);
+        return ResponseEntity.ok(pedido);
+    }
+    
+    
     @PutMapping("/{idPedido}/estado")
     public ResponseEntity<PedidoDTO> actualizarEstado(
             @PathVariable Integer idPedido,
@@ -51,7 +65,7 @@ public class RepartidorController {
             @PathVariable Integer idPedido,
             @RequestParam String codigoQR,
             @RequestParam Integer idRepartidor) {
-        PedidoDTO pedido = pedidoService.verificarEntrega(codigoQR, idRepartidor);
+        PedidoDTO pedido = pedidoService.verificarEntrega(idPedido,codigoQR, idRepartidor);
         return ResponseEntity.ok(pedido);
     }
 }

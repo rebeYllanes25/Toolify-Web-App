@@ -91,89 +91,98 @@ public class VentaService {
 
 	@Transactional
 	public ResultadoResponse guardarVentaDelivery(Venta venta) {
-        try {
-
-            if (venta.getIdVenta() != null) venta.setIdVenta(null);
-            venta.setTipoVenta("R");
-            venta.setEstado("P");
-
-            Usuario usuario = usuarioRepository.findById(venta.getUsuario().getIdUsuario())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
-            venta.setUsuario(usuario);
-
-            List<DetalleVenta> detallesProcesados = venta.getDetalles().stream()
-                    .map(detalle -> {
-                        Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto())
-                                .orElseThrow(() -> new RuntimeException("Producto no encontrado."));
-
-                        if (producto.getStock() < detalle.getCantidad()) {
-                            throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());
-                        }
-
-                        productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - detalle.getCantidad());
-
-                        detalle.setVenta(venta); // Establece la relación bidireccional crucial
-                        detalle.setProducto(producto);
-                        detalle.setSubTotal(producto.getPrecio() * detalle.getCantidad());
-                        return detalle;
-                    }).toList();
-            venta.getDetalles().clear();
-            venta.getDetalles().addAll(detallesProcesados);
-            venta.setTotal(detallesProcesados.stream().mapToDouble(DetalleVenta::getSubTotal).sum());
-
-            // Asignación de especificaciones por defecto
-            if (venta.getEspecificaciones() == null || venta.getEspecificaciones().isBlank()) {
-                venta.setEspecificaciones("Venta autogestionada");
-            }
-
-            // Gestión del pedido si es de delivery
-            if ("D".equals(venta.getMetodoEntrega()) && venta.getPedido() != null) {
-
-                Pedido pedido = venta.getPedido();
-                pedido.setVenta(venta);
-                pedido.setLatitud(venta.getPedido().getLatitud());
-                pedido.setLongitud(venta.getPedido().getLongitud());
-
-                var costoExtra = 0.0;
-                var movilidad = venta.getPedido().getMovilidad();
-
-                switch (movilidad) {
-                    case "M":
-                        costoExtra = 10;
-                        break;
-                    case "A":
-                        costoExtra = 15;
-                        break;
-                    default:
-                        costoExtra = 0;
-                }
-
-                var nuevoTotal = venta.getTotal() + costoExtra;
-                venta.setTotal(nuevoTotal);
-
-                pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
-                pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
-                pedido.setEstado("PE");                              
-
-                venta.setPedido(pedido);
-
-                String tipoNotificacion = mapearEstadoATipo("PE");
-                notificacionService.crearYEnviarNotificacion(
-                        pedido.getVenta().getUsuario(),
-                        pedido,
-                        tipoNotificacion
-                );
-
-            } else {
-                venta.setPedido(null);
-            }
-
-            Venta ventaGuardada = ventaRepository.save(venta);
-
-            return new ResultadoResponse(true, "Venta registrada con ID: " + ventaGuardada.getIdVenta());
-        } catch (Exception e) {
-            return new ResultadoResponse(false, "Error al registrar la venta: " + e.getMessage());
-        }
+	    try {
+	        if (venta.getIdVenta() != null) venta.setIdVenta(null);
+	        venta.setTipoVenta("R");
+	        venta.setEstado("P");
+	
+	        Usuario usuario = usuarioRepository.findById(venta.getUsuario().getIdUsuario())
+	                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+	        venta.setUsuario(usuario);
+	
+	        List<DetalleVenta> detallesProcesados = venta.getDetalles().stream()
+	                .map(detalle -> {
+	                    Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto())
+	                            .orElseThrow(() -> new RuntimeException("Producto no encontrado."));
+	
+	                    if (producto.getStock() < detalle.getCantidad()) {
+	                        throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());
+	                    }
+	
+	                    productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - detalle.getCantidad());
+	
+	                    detalle.setVenta(venta);
+	                    detalle.setProducto(producto);
+	                    detalle.setSubTotal(producto.getPrecio() * detalle.getCantidad());
+	                    return detalle;
+	                }).toList();
+	        
+	        venta.getDetalles().clear();
+	        venta.getDetalles().addAll(detallesProcesados);
+	        venta.setTotal(detallesProcesados.stream().mapToDouble(DetalleVenta::getSubTotal).sum());
+	
+	        if (venta.getEspecificaciones() == null || venta.getEspecificaciones().isBlank()) {
+	            venta.setEspecificaciones("Venta autogestionada");
+	        }
+	
+	        if ("D".equals(venta.getMetodoEntrega()) && venta.getPedido() != null) {
+	            
+	            Pedido pedidoOriginal = venta.getPedido();	            
+	            venta.setPedido(null);	            
+	            Venta ventaGuardada = ventaRepository.save(venta);           
+	            Pedido pedido = new Pedido();
+	            
+	            pedido.setLatitud(pedidoOriginal.getLatitud());
+	            pedido.setLongitud(pedidoOriginal.getLongitud());
+	            pedido.setDireccionEntrega(pedidoOriginal.getDireccionEntrega());
+	            pedido.setMovilidad(pedidoOriginal.getMovilidad());
+	            pedido.setObservaciones(pedidoOriginal.getObservaciones());
+	            
+	            pedido.setVenta(ventaGuardada);
+	            
+	            double costoExtra = 0.0;
+	            String movilidad = pedidoOriginal.getMovilidad();
+	
+	            switch (movilidad) {
+	                case "M":
+	                    costoExtra = 10;
+	                    break;
+	                case "A":
+	                    costoExtra = 15;
+	                    break;
+	                default:
+	                    costoExtra = 0;
+	            }
+	
+	            double nuevoTotal = ventaGuardada.getTotal() + costoExtra;
+	            ventaGuardada.setTotal(nuevoTotal);
+	
+	            pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
+	            pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
+	            pedido.setEstado("PE");
+	
+	            Pedido pedidoGuardado = pedidoRepository.save(pedido);
+	            
+	            ventaGuardada.setPedido(pedidoGuardado);
+	            Venta ventaFinal = ventaRepository.save(ventaGuardada);
+	
+	            String tipoNotificacion = mapearEstadoATipo("PE");
+	            notificacionService.crearYEnviarNotificacion(
+	                    ventaFinal.getUsuario(),
+	                    pedidoGuardado,
+	                    tipoNotificacion
+	            );
+	
+	            return new ResultadoResponse(true, "Venta delivery registrada con ID: " + ventaFinal.getIdVenta());
+	            
+	        } else {
+	            Venta ventaGuardada = ventaRepository.save(venta);
+	            return new ResultadoResponse(true, "Venta registrada con ID: " + ventaGuardada.getIdVenta());
+	        }
+	        
+	    } catch (Exception e) {
+	        return new ResultadoResponse(false, "Error al registrar la venta: " + e.getMessage());
+	    }
 	}
 
     @Transactional

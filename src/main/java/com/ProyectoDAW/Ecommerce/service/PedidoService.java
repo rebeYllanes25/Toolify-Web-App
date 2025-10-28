@@ -74,11 +74,15 @@ public class PedidoService {
 
         if (filas == 0) {
             throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido + " o el estado ya era " + estado + ".");
-        }
-
+        }   
+        
         Pedido pedidoActualizado = getPedidoById(idPedido);
         
-        if("AS".equals(pedidoActualizado.getEstado())) {
+        if ("AS".equals(pedidoActualizado.getEstado())) {
+            
+            pedidoActualizado.setFechaAsignacion(LocalDateTime.now());
+            pedidoRepository.save(pedidoActualizado);
+            
             String tipoNotificacion = mapearEstadoATipo("AS");
             notificacionService.crearYEnviarNotificacion(
                     pedidoActualizado.getVenta().getUsuario(),
@@ -87,7 +91,6 @@ public class PedidoService {
             );
         }
         
-
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 
@@ -107,13 +110,6 @@ public class PedidoService {
         Pedido pedidoActualizado = getPedidoById(idPedido);
         pedidoActualizado.setFechaAsignacion(LocalDateTime.now());
         pedidoRepository.save(pedidoActualizado);
-
-        String tipoNotificacion = mapearEstadoATipo("AS");
-        notificacionService.crearYEnviarNotificacion(
-                pedidoActualizado.getVenta().getUsuario(),
-                pedidoActualizado,
-                tipoNotificacion
-        );
 
         return PedidoMapper.toDTO(pedidoActualizado);
     }
@@ -145,46 +141,76 @@ public class PedidoService {
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 
+    
+    @Transactional
+    public PedidoDTO cercaPedido(Integer idPedido) {
+        // Verificar que el pedido existe y está en camino
+        Pedido pedido = getPedidoById(idPedido);
+        
+        if (!"EC".equals(pedido.getEstado())) {
+            throw new RuntimeException("Error: El pedido con ID " + idPedido + " debe estar en estado 'En Camino' para marcarlo como cerca.");
+        }
+        
+        // Actualizar el estado a "CR" (Cerca)
+        int exito = pedidoRepository.actualizarEstado(idPedido, "CR");
+        
+        if (exito == 0) {
+            throw new RuntimeException("Error: No se pudo actualizar el estado del Pedido con ID " + idPedido + " a 'Cerca'.");
+        }
+        
+        // Obtener el pedido actualizado
+        Pedido pedidoActualizado = getPedidoById(idPedido);
+        
+        // Registrar la fecha cuando está cerca
+        if ("CR".equals(pedidoActualizado.getEstado())) {
+            pedidoActualizado.setFechaEnCamino(LocalDateTime.now());
+        }
+        
+        // Crear y enviar notificación
+        String tipoNotificacion = mapearEstadoATipo("CR");
+        notificacionService.crearYEnviarNotificacion(
+                pedidoActualizado.getVenta().getUsuario(),
+                pedidoActualizado,
+                tipoNotificacion
+        );
+        
+        return PedidoMapper.toDTO(pedidoActualizado);
+    }
+    
+    
+    
     public PedidoDTO buscarPedidoPorId(Integer idPedido) {
         Pedido pedido = getPedidoById(idPedido);
         return PedidoMapper.toDTO(pedido);
     }
 
     @Transactional
-    public PedidoDTO verificarEntrega(String codigoQR, Integer idRepartidor) {
+    public PedidoDTO verificarEntrega(Integer idPedido, String codigoQR, Integer idRepartidor) {
 
-        List<Pedido> pedidos = pedidoRepository.findByQrVerificacion(codigoQR);
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RuntimeException("Error: No se encontró el pedido con ID " + idPedido));
 
-        if (pedidos.isEmpty()) {
-            throw new RuntimeException("Error: No se encontró ningún pedido con el código QR proporcionado.");
+        if (!pedido.getQrVerificacion().equals(codigoQR)) {
+            throw new RuntimeException("Error: El código QR no coincide con el pedido.");
         }
 
-        if (pedidos.size() > 1) {
-            pedidos = pedidos.stream()
-                    .filter(p -> p.getRepartidor() != null && p.getRepartidor().getIdUsuario().equals(idRepartidor))
-                    .toList();
-
-            if (pedidos.isEmpty()) {
-                throw new RuntimeException("Error: Múltiples pedidos con el mismo QR. " +
-                        "No se encontró ninguna coincidencia con el ID de repartidor: " + idRepartidor);
-            }
-        }
-
-        Pedido pedido = pedidos.get(0);
-
+        // Validar repartidor
         if (pedido.getRepartidor() == null || !pedido.getRepartidor().getIdUsuario().equals(idRepartidor)) {
             throw new RuntimeException("Error: El pedido no está asignado a este repartidor.");
         }
 
+        // Actualizar estado
         pedido.setEstado("EN");
         pedido.setFechaEntregado(LocalDateTime.now());
         actualizarTiempoEntrega(pedido.getIdPedido());
         pedidoRepository.save(pedido);
 
+        // Actualizar venta
         Venta venta = pedido.getVenta();
         venta.setEstado("E");
         ventaRepository.save(venta);
 
+        // Notificar al cliente
         String tipoNotificacion = mapearEstadoATipo("EN");
         notificacionService.crearYEnviarNotificacion(
                 pedido.getVenta().getUsuario(),
@@ -192,10 +218,12 @@ public class PedidoService {
                 tipoNotificacion
         );
 
+        // Crear registro de calificación
         calificacionService.crearRegistroCalificacion(pedido);
 
         return PedidoMapper.toDTO(pedido);
     }
+
 
     public void actualizarTiempoEntrega(Integer idPedido) {
         Pedido pedido = pedidoRepository.findById(idPedido)

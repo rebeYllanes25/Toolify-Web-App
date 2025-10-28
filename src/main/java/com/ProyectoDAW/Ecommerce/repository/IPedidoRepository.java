@@ -48,7 +48,7 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
             LEFT JOIN d.producto prod
             LEFT JOIN FETCH p.repartidor r
             WHERE u.idUsuario = :idCliente AND
-            p.estado = "PE" OR p.estado = "EC"
+            p.estado = "PE" OR p.estado = "AS" OR p.estado = "EC" OR p.estado = "CR"
         """)
         List<Pedido> listarPedidosPorClienteInicio(@Param("idCliente") Integer idCliente);
 
@@ -61,7 +61,8 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
             LEFT JOIN v.detalles d
             LEFT JOIN d.producto prod
             LEFT JOIN FETCH p.repartidor r
-            WHERE u.idUsuario = :idCliente
+            WHERE u.idUsuario = :idCliente AND
+            p.estado = "EN"
         """)
         List<Pedido> listarPedidosPorCliente(@Param("idCliente") Integer idCliente);
     

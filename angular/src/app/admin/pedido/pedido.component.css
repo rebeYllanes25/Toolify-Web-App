@@ -1,0 +1,468 @@
+/* ===================================
+   CONTAINER PRINCIPAL
+   =================================== */
+.pedido-container {
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+/* ===================================
+   HEADER
+   =================================== */
+.page-header {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.title-section h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.title-section h2 i {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.8rem;
+  margin-right: 0.75rem;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ===================================
+   STATS CARD
+   =================================== */
+.stats-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.stats-mini {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-radius: 12px;
+  border: 2px solid #667eea30;
+}
+
+.stat-item i {
+  font-size: 1.5rem;
+  color: #667eea;
+}
+
+.stat-item span {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+/* ===================================
+   LOADING
+   =================================== */
+.loading {
+  background: white;
+  border-radius: 16px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.3s ease;
+}
+
+.loading i {
+  font-size: 3rem;
+  color: #667eea;
+  margin-bottom: 1rem;
+}
+
+.loading {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/* ===================================
+   TABLE WRAPPER
+   =================================== */
+.table-wrapper {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+/* ===================================
+   TABLA
+   =================================== */
+.pedido-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.pedido-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.pedido-table thead tr th {
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.pedido-table thead tr th:first-child {
+  border-top-left-radius: 0;
+}
+
+.pedido-table thead tr th:last-child {
+  border-top-right-radius: 0;
+}
+
+.pedido-table tbody tr {
+  border-bottom: 1px solid #ecf0f1;
+  transition: all 0.3s ease;
+}
+
+.pedido-table tbody tr:hover {
+  background: #f8f9fa;
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+.pedido-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.pedido-table tbody td {
+  padding: 1.25rem 1.5rem;
+  color: #2c3e50;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+/* ===================================
+   BADGES Y ELEMENTOS
+   =================================== */
+.badge-pedido {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  color: #667eea;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 2px solid #667eea30;
+}
+
+.badge-pedido i {
+  font-size: 0.9rem;
+}
+
+.cliente-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cliente-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.cliente-nombre {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.direccion-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-width: 300px;
+}
+
+.direccion-info i {
+  color: #667eea;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.direccion-texto {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.precio-total {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #27ae60;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.fecha-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ecf0f1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.fecha-badge i {
+  color: #95a5a6;
+}
+
+/* ===================================
+   BOTONES
+   =================================== */
+.btn-aceptar {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.btn-aceptar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.btn-aceptar:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-aceptar:disabled {
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.btn-aceptar i {
+  font-size: 1rem;
+}
+
+/* ===================================
+   SIN PEDIDOS
+   =================================== */
+.sin-pedidos {
+  background: white;
+  border-radius: 16px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.3s ease;
+}
+
+.sin-pedidos i {
+  font-size: 5rem;
+  color: #bdc3c7;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.sin-pedidos p {
+  font-size: 1.3rem;
+  color: #7f8c8d;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ===================================
+   ESTADO BADGES
+   =================================== */
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.estado-pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border: 2px solid #ffeaa7;
+}
+
+.estado-aceptado {
+  background: #d4edda;
+  color: #155724;
+  border: 2px solid #c3e6cb;
+}
+
+.estado-badge i {
+  font-size: 0.8rem;
+}
+
+/* ===================================
+   ANIMACIONES
+   =================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fa-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+@media (max-width: 1200px) {
+  .pedido-table {
+    font-size: 0.85rem;
+  }
+  
+  .pedido-table thead tr th,
+  .pedido-table tbody td {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .pedido-container {
+    padding: 1rem;
+  }
+
+  .title-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .pedido-table {
+    min-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stats-mini {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .stat-item {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .direccion-info {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .pedido-container {
+    padding: 0.5rem;
+  }
+
+  .page-header {
+    padding: 1.5rem;
+  }
+
+  .title-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .stats-mini {
+    flex-direction: column;
+  }
+
+  .stat-item {
+    width: 100%;
+  }
+
+  .btn-aceptar {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}

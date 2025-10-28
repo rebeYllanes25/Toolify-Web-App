@@ -43,6 +43,12 @@ public class PedidoService {
         List<Pedido> pedidos = pedidoRepository.listarPedidosPorEstado("PE");
         return pedidos.stream().map(PedidoMapper::toDTO).toList();
     }
+    
+    @Transactional
+    public List<PedidoDTO> listarPedidosAceptados() {
+        List<Pedido> pedidos = pedidoRepository.listarPedidosPorEstado("AS");
+        return pedidos.stream().map(PedidoMapper::toDTO).toList();
+    }
 
     @Transactional
     public List<PedidoDTO> listarPedidosPorClienteYEstado(Integer idCliente, String estado) {
@@ -197,12 +203,12 @@ public class PedidoService {
 
     private String mapearEstadoATipo(String estado) {
         return switch (estado.toUpperCase()) {
-            case "PENDIENTE" -> "PEDIDO_PENDIENTE";
-            case "ACEPTADO" -> "PEDIDO_ACEPTADO";
-            case "EN_CAMINO" -> "PEDIDO_EN_CAMINO";
-            case "CERCA" -> "PEDIDO_CERCA";
-            case "ENTREGADO" -> "PEDIDO_ENTREGADO";
-            case "FALLIDO", "CANCELADO" -> "PEDIDO_FALLIDO";
+            case "PE" -> "PEDIDO_PENDIENTE";
+            case "AS" -> "PEDIDO_ACEPTADO";
+            case "EC" -> "PEDIDO_EN_CAMINO";
+            case "CR" -> "PEDIDO_CERCA";
+            case "EN" -> "PEDIDO_ENTREGADO";
+            case "FA", "CANCELADO" -> "PEDIDO_FALLIDO";
             default -> "PEDIDO_PENDIENTE";
         };
     }

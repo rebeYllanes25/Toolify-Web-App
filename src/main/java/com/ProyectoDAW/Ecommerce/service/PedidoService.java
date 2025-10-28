@@ -74,9 +74,23 @@ public class PedidoService {
 
         if (filas == 0) {
             throw new RuntimeException("Error: No se encontró el Pedido con ID " + idPedido + " o el estado ya era " + estado + ".");
-        }
-
+        }   
+        
         Pedido pedidoActualizado = getPedidoById(idPedido);
+        
+        if ("AS".equals(pedidoActualizado.getEstado())) {
+            
+            pedidoActualizado.setFechaAsignacion(LocalDateTime.now());
+            pedidoRepository.save(pedidoActualizado);
+            
+            String tipoNotificacion = mapearEstadoATipo("AS");
+            notificacionService.crearYEnviarNotificacion(
+                    pedidoActualizado.getVenta().getUsuario(),
+                    pedidoActualizado,
+                    tipoNotificacion
+            );
+        }
+        
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 
@@ -96,13 +110,6 @@ public class PedidoService {
         Pedido pedidoActualizado = getPedidoById(idPedido);
         pedidoActualizado.setFechaAsignacion(LocalDateTime.now());
         pedidoRepository.save(pedidoActualizado);
-
-        String tipoNotificacion = mapearEstadoATipo("AS");
-        notificacionService.crearYEnviarNotificacion(
-                pedidoActualizado.getVenta().getUsuario(),
-                pedidoActualizado,
-                tipoNotificacion
-        );
 
         return PedidoMapper.toDTO(pedidoActualizado);
     }
@@ -183,7 +190,6 @@ public class PedidoService {
         Pedido pedido = pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("Error: No se encontró el pedido con ID " + idPedido));
 
-        // Validar el código QR
         if (!pedido.getQrVerificacion().equals(codigoQR)) {
             throw new RuntimeException("Error: El código QR no coincide con el pedido.");
         }

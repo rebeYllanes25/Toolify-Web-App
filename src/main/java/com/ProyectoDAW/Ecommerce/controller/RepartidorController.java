@@ -27,7 +27,8 @@ public class RepartidorController {
         List<PedidoDTO> pedidos = pedidoService.listarPedidosAceptados();
         return ResponseEntity.ok(pedidos);
     }
-
+    
+    //Ya no se usa
     @PutMapping("/asignar/{idPedido}")
     public ResponseEntity<PedidoDTO> registrarRepartidor(
             @PathVariable Integer idPedido,

@@ -92,19 +92,20 @@ public class UsuarioService implements UserDetailsService{
 	        
 	        PerfilDetalleComprasDto dto = new PerfilDetalleComprasDto();
 	        dto.setIdUser((Integer) row[0]);
-	        dto.setNombresCompletos((String) row[1]);
-	        dto.setCorreo((String) row[2]);
-	        dto.setNroDoc((String) row[3]);
-	        dto.setDireccion((String) row[4]);
-	        dto.setDistrito((String) row[5]);
-	        dto.setTelefono((String) row[6]);
-	        dto.setFechaRegistro((String) row[7]);
-	        dto.setProductoMasComprado((String) row[8]);
-	        dto.setFechaMayorCompras((String) row[9]);
-	        dto.setTotalDeProductosComprados((Long) row[10]);
-	        dto.setGastoTotal(row[11] != null ? ((Number) row[11]).doubleValue() : 0.0);
-	        dto.setCategoriaMasComprada((String) row[12]);
-	        dto.setTotalVentas((Long) row[13]);
+	        dto.setImagenUsuario((String) row[1]);
+	        dto.setNombresCompletos((String) row[2]);
+	        dto.setCorreo((String) row[3]);
+	        dto.setNroDoc((String) row[4]);
+	        dto.setDireccion((String) row[5]);
+	        dto.setDistrito((String) row[6]);
+	        dto.setTelefono((String) row[7]);
+	        dto.setFechaRegistro((String) row[8]);
+	        dto.setProductoMasComprado((String) row[9]);
+	        dto.setFechaMayorCompras((String) row[10]);
+	        dto.setTotalDeProductosComprados((Long) row[11]);
+	        dto.setGastoTotal(row[12] != null ? ((Number) row[12]).doubleValue() : 0.0);
+	        dto.setCategoriaMasComprada((String) row[13]);
+	        dto.setTotalVentas((Long) row[14]);
 	        
 	        return dto;
 	}

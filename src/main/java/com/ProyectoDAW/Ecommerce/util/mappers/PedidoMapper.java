@@ -50,6 +50,7 @@ public class PedidoMapper {
                 p.getRepartidor() != null ? p.getRepartidor().getNombres() : null,
                 p.getRepartidor() != null ? p.getRepartidor().getApePaterno() : null,
                 p.getRepartidor() != null ? p.getRepartidor().getTelefono() : null,	
+                
                 v.getEspecificaciones(),
                 p.getEstado()
                 

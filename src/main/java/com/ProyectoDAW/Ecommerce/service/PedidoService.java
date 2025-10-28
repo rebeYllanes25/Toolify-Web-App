@@ -1,5 +1,6 @@
 package com.ProyectoDAW.Ecommerce.service;
 
+import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
 import com.ProyectoDAW.Ecommerce.model.Venta;
@@ -252,6 +253,11 @@ public class PedidoService {
         };
     }
 
+    
+    public ComentarioPuntuacionDTO findComentarionPuntuacion(Integer idPedido) {
+    	return pedidoRepository.comentarioPuntuacion(idPedido);
+    }
+    
     // Graficos
 
     public List<Object[]> resumenMensualVentasPedidos(){

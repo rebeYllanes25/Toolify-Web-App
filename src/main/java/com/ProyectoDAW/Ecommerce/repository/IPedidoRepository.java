@@ -1,5 +1,6 @@
 package com.ProyectoDAW.Ecommerce.repository;
 
+import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -108,6 +109,11 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
     List<Object[]> resumenMensualVentasPedidos(@Param("anio") int anio);
     
     Optional<Pedido> findByVenta_IdVenta(Integer idVenta);
-
-
+    
+    @Query(value="""
+    		SELECT puntuacion,comentario 
+    		FROM tb_calificacion where id_pedido =:idPedido
+    		
+    		""", nativeQuery = true)
+    ComentarioPuntuacionDTO comentarioPuntuacion(@Param("idPedido")Integer idPedido);
 }

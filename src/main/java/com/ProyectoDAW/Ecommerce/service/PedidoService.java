@@ -77,6 +77,17 @@ public class PedidoService {
         }
 
         Pedido pedidoActualizado = getPedidoById(idPedido);
+        
+        if("AS".equals(pedidoActualizado.getEstado())) {
+            String tipoNotificacion = mapearEstadoATipo("AS");
+            notificacionService.crearYEnviarNotificacion(
+                    pedidoActualizado.getVenta().getUsuario(),
+                    pedidoActualizado,
+                    tipoNotificacion
+            );
+        }
+        
+
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 

@@ -1,6 +1,7 @@
 package com.ProyectoDAW.Ecommerce.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,5 +69,13 @@ public class RepartidorController {
             @RequestParam Integer idRepartidor) {
         PedidoDTO pedido = pedidoService.verificarEntrega(idPedido,codigoQR, idRepartidor);
         return ResponseEntity.ok(pedido);
+    }
+    
+    @GetMapping("/estadisticas/{idRepartidor}")
+    public ResponseEntity<Map<String, Object>> obtenerEstadisticasRepartidor(
+            @PathVariable Integer idRepartidor) {
+        
+        Map<String, Object> estadisticas = pedidoService.obtenerEstadisticasRepartidor(idRepartidor);
+        return ResponseEntity.ok(estadisticas);
     }
 }

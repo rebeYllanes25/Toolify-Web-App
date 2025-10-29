@@ -4,6 +4,7 @@ import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
 import com.ProyectoDAW.Ecommerce.model.Venta;
+import com.ProyectoDAW.Ecommerce.repository.ICalificacionRepository;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
 import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
@@ -14,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PedidoService {
@@ -33,6 +36,9 @@ public class PedidoService {
 
     @Autowired
     private NotificacionService notificacionService;
+    
+    @Autowired
+    private ICalificacionRepository calificacionRepository;
 
     private Pedido getPedidoById(Integer idPedido) {
         return pedidoRepository.findById(idPedido)
@@ -263,4 +269,23 @@ public class PedidoService {
     public List<Object[]> resumenMensualVentasPedidos(){
         return pedidoRepository.resumenMensualVentasPedidos(2025);
     }
+
+	public Map<String, Object> obtenerEstadisticasRepartidor(Integer idRepartidor) {
+		Map<String, Object> estadisticas = new HashMap<>();
+	    
+	    // 1. Número total de entregas (pedidos con estado "EN" - Entregado)
+	    Long totalEntregas = pedidoRepository.contarPedidosEntregadosPorRepartidor(idRepartidor);
+	    
+	    // 2. Tiempo promedio de entrega
+	    Double tiempoPromedio = pedidoRepository.calcularTiempoPromedioEntrega(idRepartidor);
+	    
+	    // 3. Calificación promedio - USAR EL MÉTODO QUE YA TIENES
+	    Double calificacionPromedio = calificacionRepository.obtenerPromedioRepartidor(idRepartidor);
+	    
+	    estadisticas.put("totalEntregas", totalEntregas != null ? totalEntregas : 0);
+	    estadisticas.put("tiempoPromedio", tiempoPromedio != null ? tiempoPromedio : 0.0);
+	    estadisticas.put("calificacionPromedio", calificacionPromedio != null ? calificacionPromedio : 0.0);
+	    
+	    return estadisticas;
+	}
 }

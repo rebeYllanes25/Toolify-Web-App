@@ -2,6 +2,7 @@ package com.ProyectoDAW.Ecommerce.repository;
 
 import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
+import com.ProyectoDAW.Ecommerce.dto.RepartidorImagenStatsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -131,8 +132,7 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
            "AND p.fechaEntregado IS NOT NULL")
     Double calcularTiempoPromedioEntrega(@Param("idRepartidor") Integer idRepartidor);
     
-    
-    
+
     
     
 }

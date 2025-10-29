@@ -3,6 +3,7 @@ package com.ProyectoDAW.Ecommerce.controller;
 import com.ProyectoDAW.Ecommerce.dto.CalificacionDTO;
 import com.ProyectoDAW.Ecommerce.dto.request.CalificarRequest;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
+import com.ProyectoDAW.Ecommerce.dto.RepartidorImagenStatsDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResumenMensualVentaPedidoDTO;
 import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.service.CalificacionService;

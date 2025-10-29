@@ -11,6 +11,7 @@ import lombok.Setter;
 public class PerfilDetalleComprasDto {
 	
 		private Integer idUser;
+		private String imagenUsuario;
 		private String nombresCompletos;
 		private String correo;
 		private String nroDoc;

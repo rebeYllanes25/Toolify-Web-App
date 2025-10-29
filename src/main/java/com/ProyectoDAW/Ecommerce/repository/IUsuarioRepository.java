@@ -24,6 +24,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, Integer>{
 	@Query(value = """
 		    SELECT 
 		        CAST(u.ID_USUARIO AS INTEGER) as idUser,
+		        u.IMAGEN_USUARIO as imagenUsuario,
 		        CONCAT(u.NOMBRES, ' ', u.APE_PATERNO, ' ', u.APE_MATERNO) as nombresCompletos,
 		        u.CORREO as correo,
 		        u.NRO_DOC as nroDoc,

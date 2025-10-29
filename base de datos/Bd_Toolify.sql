@@ -198,7 +198,7 @@ VALUES
 ('Luis','Pérez','García','luis.perez@example.com','clave123','12345678','Av. Lima 123',1,'987654321',1,null), --Administrador
 
 ('María','Ramírez','Lopez','maria.ramirez@example.com','clave123','23456789','Calle Real 456',2,'987654322',2,null), --Cliente 1
-('Rebeca','Yllanes','Chavez','rebeca.yllanes@gmail.com','rebeca123','75454532','Av. Riva Agüero 345 ',3,'908955357',2,'"https://res.cloudinary.com/dheqy208f/image/upload/v1761684249/TooLifyWeb/Products/pz8nbkv2jhzidmuwhfni.jpg"'),--Cliente  2
+('Rebeca','Yllanes','Chavez','rebeca.yllanes@gmail.com','rebeca123','75454532','Av. Riva Agüero 345 ',3,'908955357',2,'https://res.cloudinary.com/dheqy208f/image/upload/v1761684249/TooLifyWeb/Products/pz8nbkv2jhzidmuwhfni.jpg'),--Cliente  2
 ('Victor','Narazas','Garcia','victor.narazas@gmail.com','victor123','56876765','Av. Angamos 234',3,'928845092',2,'https://res.cloudinary.com/dheqy208f/image/upload/v1761684049/TooLifyWeb/Products/otacdf0ibhrigdxm3ji3.jpg'),--Cliente  3
 ('Carlos','Sánchez','Morales','carlos.sanchez@example.com','clave123','11223344','Av. Grau 789',3,'987654325',2,null), --cliente 4
 ('Elena','Huerta','Campos','elena.huerta@example.com','clave123','22334455','Jr. Las Flores 321',4,'987654326',2,null), --cliente 5

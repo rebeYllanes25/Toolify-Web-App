@@ -2,6 +2,7 @@ package com.ProyectoDAW.Ecommerce.service;
 
 import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
+import com.ProyectoDAW.Ecommerce.dto.RepartidorImagenStatsDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.ICalificacionRepository;
@@ -225,8 +226,8 @@ public class PedidoService {
                 tipoNotificacion
         );
 
-        // Crear registro de calificación
-        calificacionService.crearRegistroCalificacion(pedido);
+        /* Crear registro de calificación
+        calificacionService.crearRegistroCalificacion(pedido);*/
 
         return PedidoMapper.toDTO(pedido);
     }
@@ -263,6 +264,8 @@ public class PedidoService {
     public ComentarioPuntuacionDTO findComentarionPuntuacion(Integer idPedido) {
     	return pedidoRepository.comentarioPuntuacion(idPedido);
     }
+    
+    
     
     // Graficos
 

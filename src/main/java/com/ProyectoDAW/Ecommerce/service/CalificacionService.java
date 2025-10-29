@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.time.LocalDateTime;
 
 @Service
 public class CalificacionService {
 
+	
     @Autowired
     IPedidoRepository pedidoRepository;
 
@@ -82,7 +84,8 @@ public class CalificacionService {
     
     
     public boolean pedidoYaCalificado(Integer idPedido) {
-    	return calificacionRepository.existsByPedidoIdPedido(idPedido);
+    	boolean existe = calificacionRepository.existsByPedidoIdPedido(idPedido);
+    	return existe;
     }
     
     

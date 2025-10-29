@@ -116,4 +116,23 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
     		
     		""", nativeQuery = true)
     ComentarioPuntuacionDTO comentarioPuntuacion(@Param("idPedido")Integer idPedido);
+    
+    
+    // Contar pedidos entregados
+    @Query("SELECT COUNT(p) FROM Pedido p WHERE p.repartidor.idUsuario = :idRepartidor AND p.estado = 'EN'")
+    Long contarPedidosEntregadosPorRepartidor(@Param("idRepartidor") Integer idRepartidor);
+    
+    // Opción 1: Calcular tiempo real entre fechas
+    @Query("SELECT AVG(TIMESTAMPDIFF(MINUTE, p.fechaEnCamino, p.fechaEntregado)) " +
+           "FROM Pedido p " +
+           "WHERE p.repartidor.idUsuario = :idRepartidor " +
+           "AND p.estado = 'EN' " +
+           "AND p.fechaEnCamino IS NOT NULL " +
+           "AND p.fechaEntregado IS NOT NULL")
+    Double calcularTiempoPromedioEntrega(@Param("idRepartidor") Integer idRepartidor);
+    
+    
+    
+    
+    
 }

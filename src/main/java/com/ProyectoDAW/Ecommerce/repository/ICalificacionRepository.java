@@ -17,5 +17,5 @@ public interface ICalificacionRepository extends JpaRepository<Calificacion, Int
     Double obtenerPromedioRepartidor(@Param("idRepartidor") Integer idRepartidor);
     
     
-    
+ 
 }

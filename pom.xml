@@ -134,6 +134,13 @@
             <version>9.2.0</version>
         </dependency>
 
+
+		<!--Dependencia para el uso de WebSockets-->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+   			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

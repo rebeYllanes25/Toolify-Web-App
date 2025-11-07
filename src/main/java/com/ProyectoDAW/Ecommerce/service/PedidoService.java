@@ -13,6 +13,7 @@ import com.ProyectoDAW.Ecommerce.util.FechaUtils;
 import com.ProyectoDAW.Ecommerce.util.mappers.PedidoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,10 @@ public class PedidoService {
     
     @Autowired
     private ICalificacionRepository calificacionRepository;
+    
+    
+    @Autowired
+    private SimpMessagingTemplate msgtemplate;
 
     private Pedido getPedidoById(Integer idPedido) {
         return pedidoRepository.findById(idPedido)
@@ -99,6 +104,8 @@ public class PedidoService {
             );
         }
         
+        actualizarCambiosEstadosWebsockets(pedidoActualizado,"PE","AS",null,"A");
+        
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 
@@ -127,6 +134,8 @@ public class PedidoService {
         if (!usuarioRepository.existsById(idRepartidor)) {
             throw new RuntimeException("Error: El repartidor con ID " + idRepartidor + " no existe.");
         }
+        
+        String estadoAnterior = getPedidoById(idPedido).getEstado();
 
         int exito = pedidoRepository.registrarRepartidor(idPedido, idRepartidor);
         int exito2 = pedidoRepository.actualizarEstado(idPedido, "EC");
@@ -146,6 +155,7 @@ public class PedidoService {
                 tipoNotificacion
         );
         
+        actualizarCambiosEstadosWebsockets(pedidoActualizado,estadoAnterior,"EC",pedidoActualizado.getRepartidor().getIdUsuario(),"R");
         return PedidoMapper.toDTO(pedidoActualizado);
     }
 
@@ -158,6 +168,8 @@ public class PedidoService {
         if (!"EC".equals(pedido.getEstado())) {
             throw new RuntimeException("Error: El pedido con ID " + idPedido + " debe estar en estado 'En Camino' para marcarlo como cerca.");
         }
+        
+        String estadoAnterior = getPedidoById(idPedido).getEstado();
         
         // Actualizar el estado a "CR" (Cerca)
         int exito = pedidoRepository.actualizarEstado(idPedido, "CR");
@@ -182,6 +194,8 @@ public class PedidoService {
                 tipoNotificacion
         );
         
+        actualizarCambiosEstadosWebsockets(pedidoActualizado,estadoAnterior,"CR",pedidoActualizado.getRepartidor().getIdUsuario(),"R");
+        
         return PedidoMapper.toDTO(pedidoActualizado);
     }
     
@@ -202,6 +216,7 @@ public class PedidoService {
             throw new RuntimeException("Error: El código QR no coincide con el pedido.");
         }
 
+        String estadoAnterior = pedido.getEstado();
         // Validar repartidor
         if (pedido.getRepartidor() == null || !pedido.getRepartidor().getIdUsuario().equals(idRepartidor)) {
             throw new RuntimeException("Error: El pedido no está asignado a este repartidor.");
@@ -226,9 +241,9 @@ public class PedidoService {
                 tipoNotificacion
         );
 
-        /* Crear registro de calificación
-        calificacionService.crearRegistroCalificacion(pedido);*/
-
+        
+        actualizarCambiosEstadosWebsockets(pedido,estadoAnterior,"EN",idRepartidor,"R");
+        
         return PedidoMapper.toDTO(pedido);
     }
 
@@ -259,10 +274,46 @@ public class PedidoService {
             default -> "PEDIDO_PENDIENTE";
         };
     }
+    
+    private String generarMensajes(String estado) {
+    	return switch (estado.toUpperCase()) {
+        case "PE" -> "Pedido estado pendiente";
+        case "AS" -> "Pedido estado aceptado";
+        case "EC" -> "Pedido estado en camino";
+        case "CR" -> "Pedido estado cerca";
+        case "EN" -> "Pedido estado entregado";
+        case "FA", "CANCELADO" -> "Pedido estado pendiente";
+        default -> "Estado actualizando";
+    };
+    }
 
     
     public ComentarioPuntuacionDTO findComentarionPuntuacion(Integer idPedido) {
     	return pedidoRepository.comentarioPuntuacion(idPedido);
+    }
+    
+    
+    private void actualizarCambiosEstadosWebsockets(
+    		Pedido pedido,
+    		String estadoAnterior,
+    		String estadoNuevo,
+    		Integer usuarioId,
+    		String rol) {
+    	Map<String,Object> estadosUpdate = new HashMap<>();
+    	estadosUpdate.put("pedidoId", pedido.getIdPedido());
+    	estadosUpdate.put("numeroPedido", pedido.getNumPedido());
+    	estadosUpdate.put("estadoAnterior", estadoAnterior);
+    	estadosUpdate.put("estadoNuevo", estadoNuevo);
+    	estadosUpdate.put("mensaje", generarMensajes(estadoNuevo));
+    	estadosUpdate.put("timestamp", LocalDateTime.now().toString());
+    	estadosUpdate.put("usuarioId", usuarioId);
+    	estadosUpdate.put("rol", rol);
+    	
+    	String destinatarios = "/topic/pedido/" + pedido.getIdPedido() + "/notificionCliente";
+    	msgtemplate.convertAndSend(destinatarios,estadosUpdate);
+    	
+    	  System.out.println(" WebSocket enviado a: " + destinatarios);
+          System.out.println("   Estado: " + estadoAnterior + " → " + estadoNuevo);
     }
     
     

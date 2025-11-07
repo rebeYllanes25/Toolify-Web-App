@@ -6,7 +6,8 @@ import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class FirebaseConfig {
@@ -14,11 +15,14 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try {
-            FileInputStream serviceAccount =
-                    new FileInputStream("src/main/resources/firebase-service-account.json");
+            String firebaseConfig = System.getenv("FIREBASE_CONFIG_JSON");
 
+            
+            byte[] decodeBytes = java.util.Base64.getDecoder().decode(firebaseConfig);
+            ByteArrayInputStream stream = new ByteArrayInputStream(decodeBytes);
+            
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(GoogleCredentials.fromStream(stream))
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {

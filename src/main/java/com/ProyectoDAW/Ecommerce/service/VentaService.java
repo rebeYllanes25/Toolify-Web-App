@@ -181,7 +181,7 @@ public class VentaService {
 	        }
 	        
 	    } catch (Exception e) {
-	        return new ResultadoResponse(false, "Error al registrar la venta: " + e.getMessage());
+	        throw new RuntimeException("Error al registrar la venta: " + e.getMessage(),e);
 	    }
 	}
 

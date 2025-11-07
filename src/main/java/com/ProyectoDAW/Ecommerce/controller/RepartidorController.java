@@ -38,21 +38,7 @@ public class RepartidorController {
         return ResponseEntity.ok(pedido);
     }
     
-    @PutMapping("/encamino/{idPedido}")
-    public ResponseEntity<PedidoDTO> enCaminoPedido(
-            @PathVariable Integer idPedido,
-            @RequestParam Integer idRepartidor) {
-        PedidoDTO pedido = pedidoService.enCaminoPedido(idPedido, idRepartidor);
-        return ResponseEntity.ok(pedido);
-    }
-
-    @PutMapping("/cerca/{idPedido}")
-    public ResponseEntity<PedidoDTO> cercaPedido(
-            @PathVariable Integer idPedido) {
-        PedidoDTO pedido = pedidoService.cercaPedido(idPedido);
-        return ResponseEntity.ok(pedido);
-    }
-    
+    //ADMIN ACEPTA PEDIDOS cambia estado a AS(aceptado)
     
     @PutMapping("/{idPedido}/estado")
     public ResponseEntity<PedidoDTO> actualizarEstado(
@@ -62,6 +48,25 @@ public class RepartidorController {
         return ResponseEntity.ok(pedido);
     }
 
+    //Repartidor cambia el estado a EC
+    @PutMapping("/encamino/{idPedido}")
+    public ResponseEntity<PedidoDTO> enCaminoPedido(
+            @PathVariable Integer idPedido,
+            @RequestParam Integer idRepartidor) {
+        PedidoDTO pedido = pedidoService.enCaminoPedido(idPedido, idRepartidor);
+        return ResponseEntity.ok(pedido);
+    }
+
+    //Repartidor cambia el estado a CR
+    @PutMapping("/cerca/{idPedido}")
+    public ResponseEntity<PedidoDTO> cercaPedido(
+            @PathVariable Integer idPedido) {
+        PedidoDTO pedido = pedidoService.cercaPedido(idPedido);
+        return ResponseEntity.ok(pedido);
+    }
+    
+    
+    //Repartidor cambia el estado a EN
     @PutMapping("/entregar/{idPedido}")
     public ResponseEntity<PedidoDTO> verificarEntrega(
             @PathVariable Integer idPedido,

@@ -17,6 +17,12 @@ public class FirebaseConfig {
         try {
             String firebaseConfig = System.getenv("FIREBASE_CONFIG_JSON");
 
+            System.out.println("FIREBASE CONFIG: " + (firebaseConfig != null ? "Cargado" : "NULL"));
+
+            if (firebaseConfig == null) {
+                throw new RuntimeException("FIREBASE_CONFIG_JSON es NULL");
+            }
+
             
             byte[] decodeBytes = java.util.Base64.getDecoder().decode(firebaseConfig);
             ByteArrayInputStream stream = new ByteArrayInputStream(decodeBytes);
@@ -27,6 +33,7 @@ public class FirebaseConfig {
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
+                System.out.println("Firebase INITIALIZADO correctamente");
             }
         } catch (Exception e) {
             e.printStackTrace();

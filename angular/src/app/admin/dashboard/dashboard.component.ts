@@ -3,7 +3,6 @@ import { ComponenteUnoComponent } from '../graficosComponentes/componente-uno/co
 import { ComponenteDosComponent } from '../graficosComponentes/componente-dos/componente-dos.component';
 import { ComponenteTresComponent } from '../graficosComponentes/componente-tres/componente-tres.component';
 import { ComponenteCuatroComponent } from "../graficosComponentes/componente-cuatro/componente-cuatro.component";
-import { ComponenteCincoComponent } from '../graficosComponentes/componente-cinco/componente-cinco.component';
 import { ComponenteSeisComponent } from '../graficosComponentes/componente-seis/componente-seis.component';
 
 @Component({

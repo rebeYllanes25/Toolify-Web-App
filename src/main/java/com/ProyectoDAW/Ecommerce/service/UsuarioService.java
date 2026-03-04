@@ -2,6 +2,7 @@ package com.ProyectoDAW.Ecommerce.service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -10,7 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.PerfilDetalleComprasDto;
+import com.ProyectoDAW.Ecommerce.dto.response.ResultadoResponse;
 import com.ProyectoDAW.Ecommerce.model.Rol;
 import com.ProyectoDAW.Ecommerce.model.Usuario;
 import com.ProyectoDAW.Ecommerce.repository.IRolRepository;
@@ -76,4 +78,53 @@ public class UsuarioService implements UserDetailsService{
 	    response.setMensaje("Usuario creado correctamente.");
 	    return response;
 	}
+	
+	
+	public PerfilDetalleComprasDto obtenerPerfilConDetalle(Integer idUsuario) {
+		
+		List<Object[]> resultados = usuarioRepository.perfilDetalleCompras(idUsuario);
+
+		if (resultados == null) {
+            throw new RuntimeException("No se encontró información del usuario");
+        }
+		
+		 Object[] row = resultados.get(0);
+	        
+	        PerfilDetalleComprasDto dto = new PerfilDetalleComprasDto();
+	        dto.setIdUser((Integer) row[0]);
+	        dto.setImagenUsuario((String) row[1]);
+	        dto.setNombresCompletos((String) row[2]);
+	        dto.setCorreo((String) row[3]);
+	        dto.setNroDoc((String) row[4]);
+	        dto.setDireccion((String) row[5]);
+	        dto.setDistrito((String) row[6]);
+	        dto.setTelefono((String) row[7]);
+	        dto.setFechaRegistro((String) row[8]);
+	        dto.setProductoMasComprado((String) row[9]);
+	        dto.setFechaMayorCompras((String) row[10]);
+	        dto.setTotalDeProductosComprados((Long) row[11]);
+	        dto.setGastoTotal(row[12] != null ? ((Number) row[12]).doubleValue() : 0.0);
+	        dto.setCategoriaMasComprada((String) row[13]);
+	        dto.setTotalVentas((Long) row[14]);
+	        
+	        return dto;
+	}
+
+    public void actualizarFcmToken(Integer usuarioId, String token) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setFcmToken(token);
+        usuario.setFcmTokenFecha(LocalDateTime.now());
+        usuarioRepository.save(usuario);
+    }
+
+    public void eliminarFcmToken(Integer usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setFcmToken(null);
+        usuarioRepository.save(usuario);
+    }
+	
 }

@@ -67,8 +67,8 @@
       <div class="row">
         <div *ngFor="let producto of productos" class="custom-col mb-4">
           <div class="card h-100 shadow rounded">
-            <!-- Imagen base64 o fallback -->
-            <img *ngIf="producto.base64Img; else noImageTpl" [src]="'data:image/png;base64,' + producto.base64Img"
+         
+            <img *ngIf="producto.imagen; else noImageTpl" [src]="producto.imagen"
               class="card-img-top" [alt]="producto.nombre" style="object-fit: cover; height: 200px;" />
             <ng-template #noImageTpl>
               <img [src]="'assets/productos/P' + producto.idProducto + '.jpg'" class="card-img-top"
@@ -130,8 +130,8 @@
             <div class="modal-body d-md-flex gap-4">
               <!-- Imagen -->
               <div class="flex-shrink-0 mb-3 mb-md-0 text-center">
-                <img *ngIf="productoSeleccionado?.base64Img; else noImg"
-                  [src]="'data:image/png;base64,' + productoSeleccionado?.base64Img" alt="Imagen producto"
+                <img *ngIf="productoSeleccionado?.imagen; else noImg"
+                  [src]="productoSeleccionado?.imagen" alt="Imagen producto"
                   style="max-width: 300px;" class="img-fluid rounded shadow-sm" />
                 <ng-template #noImg>
                   <img [src]="'assets/productos/P' + productoSeleccionado?.idProducto + '.jpg'" alt="Imagen producto"

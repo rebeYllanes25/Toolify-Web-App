@@ -1,46 +1,226 @@
-<mat-card class="card-form">
-  <h2 class="titulo-form"> Nuevo Producto</h2>
-
-  <form (ngSubmit)="guardarProveedor()" class="form-producto">
-    
-    <mat-form-field appearance="outline">
-      <mat-label>Nombre</mat-label>
-      <input matInput [(ngModel)]="producto.nombre" name="nombre" required />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Descripción</mat-label>
-      <textarea matInput [(ngModel)]="producto.descripcion" name="descripcion" required></textarea>
-    </mat-form-field>
-
-    <div class="file-upload">
-      <label for="fileInput"> Seleccione una Imagen</label>
-      <input id="fileInput" type="file" name="imagen" required (change)="onFileSelect($event)" />
+<div class="form-container">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-content">
+      <button class="btn-back" routerLink="/admin/crudProducto" matTooltip="Volver al listado">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="title-section">
+        <h2><i class="fa-solid fa-box-open me-2"></i>Nuevo Producto</h2>
+        <p class="subtitle">Complete la información del producto</p>
+      </div>
     </div>
+  </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Proveedor (ID)</mat-label>
-      <input matInput type="number" [(ngModel)]="producto.proveedor.idProveedor" name="proveedor" />
-    </mat-form-field>
+  <!-- Formulario -->
+  <div class="form-card">
+    <form (ngSubmit)="guardarProducto()" class="product-form">
 
-    <mat-form-field appearance="outline">
-      <mat-label>Categoría (ID)</mat-label>
-      <input matInput type="number" [(ngModel)]="producto.categoria.idCategoria" name="categoria" />
-    </mat-form-field>
+      <!-- Sección: Información Básica -->
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fa-solid fa-circle-info"></i>
+          <h3>Información Básica</h3>
+        </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Precio</mat-label>
-      <input matInput type="number" [(ngModel)]="producto.precio" name="precio" required />
-    </mat-form-field>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>
+              <i class="fa-solid fa-tag me-2"></i>
+              Nombre del Producto
+            </mat-label>
+            <input 
+              matInput 
+              [(ngModel)]="producto.nombre" 
+              name="nombre" 
+              required 
+              placeholder="Ej: Laptop HP Pavilion 15">
+            <mat-hint>Ingrese un nombre descriptivo</mat-hint>
+          </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Stock</mat-label>
-      <input matInput type="number" [(ngModel)]="producto.stock" name="stock" required />
-    </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>
+              <i class="fa-solid fa-align-left me-2"></i>
+              Descripción
+            </mat-label>
+            <textarea 
+              matInput 
+              [(ngModel)]="producto.descripcion" 
+              name="descripcion" 
+              required
+              rows="4"
+              placeholder="Describa las características principales del producto"></textarea>
+            <mat-hint>Mínimo 10 caracteres</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
 
-    <div class="acciones">
-      <button mat-raised-button color="primary" type="submit">Guardar</button>
+      <!-- Sección: Imagen -->
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fa-solid fa-image"></i>
+          <h3>Imagen del Producto</h3>
+        </div>
+
+        <div class="upload-area" (click)="fileInput.click()">
+          <input 
+            #fileInput
+            type="file" 
+            name="imagen" 
+            required 
+            (change)="onFileSelect($event)"
+            accept="image/*"
+            hidden>
+          
+          <div class="upload-content" *ngIf="!imagenPreview">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <p class="upload-text">Haga clic para seleccionar una imagen</p>
+            <small class="upload-hint">PNG, JPG o JPEG (Máx. 5MB)</small>
+          </div>
+
+          <div class="image-preview" *ngIf="imagenPreview">
+            <img [src]="imagenPreview" alt="Preview">
+            <button 
+              type="button" 
+              class="btn-remove-image" 
+              (click)="removeImage($event)"
+              matTooltip="Eliminar imagen">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Clasificación -->
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fa-solid fa-layer-group"></i>
+          <h3>Clasificación</h3>
+        </div>
+
+        <div class="form-grid two-columns">
+          <mat-form-field appearance="outline">
+            <mat-label>
+              <i class="fa-solid fa-truck me-2"></i>
+              Proveedor
+            </mat-label>
+            <mat-select [(value)]="producto.proveedor" name="proveedor" required>
+              <mat-option>
+                <span class="placeholder-option">Seleccione un proveedor</span>
+              </mat-option>
+              <mat-option *ngFor="let prov of proveedores$ | async" [value]="prov">
+                <i class="fa-solid fa-building me-2"></i>
+                {{ prov.razonSocial }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>
+              <i class="fa-solid fa-layer-group me-2"></i>
+              Categoría
+            </mat-label>
+            <mat-select [(value)]="producto.categoria" name="categoria" required>
+              <mat-option>
+                <span class="placeholder-option">Seleccione una categoría</span>
+              </mat-option>
+              <mat-option *ngFor="let cat of categorias$ | async" [value]="cat">
+                <i class="fa-solid fa-folder me-2"></i>
+                {{ cat.descripcion }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Sección: Precio e Inventario -->
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fa-solid fa-sack-dollar"></i>
+          <h3>Precio e Inventario</h3>
+        </div>
+
+        <div class="form-grid two-columns">
+          <mat-form-field appearance="outline">
+            <mat-label>
+              <i class="fa-solid fa-dollar-sign me-2"></i>
+              Precio Unitario
+            </mat-label>
+            <input 
+              matInput 
+              type="number" 
+              [(ngModel)]="producto.precio" 
+              name="precio" 
+              required
+              min="0"
+              step="0.01"
+              placeholder="0.00">
+            <mat-hint>Precio en soles peruanos</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>
+              <i class="fa-solid fa-cubes me-2"></i>
+              Stock Inicial
+            </mat-label>
+            <input 
+              matInput 
+              type="number" 
+              [(ngModel)]="producto.stock" 
+              name="stock" 
+              required
+              min="0"
+              placeholder="0">
+            <mat-hint>Cantidad disponible en unidades</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn-cancel" 
+          routerLink="/admin/crudProducto"
+          mat-button>
+          <i class="fa-solid fa-xmark me-2"></i>
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn-submit"
+          [disabled]="!formularioValido()">
+          <i class="fa-solid fa-check me-2"></i>
+          Guardar Producto
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Card de ayuda -->
+  <div class="help-card">
+    <div class="help-header">
+      <i class="fa-solid fa-lightbulb"></i>
+      <h4>Consejos</h4>
     </div>
-
-  </form>
-</mat-card>
+    <ul class="help-list">
+      <li>
+        <i class="fa-solid fa-check"></i>
+        Use nombres descriptivos y específicos
+      </li>
+      <li>
+        <i class="fa-solid fa-check"></i>
+        La imagen debe tener buena calidad
+      </li>
+      <li>
+        <i class="fa-solid fa-check"></i>
+        Verifique el stock antes de guardar
+      </li>
+      <li>
+        <i class="fa-solid fa-check"></i>
+        El precio debe incluir todos los costos
+      </li>
+    </ul>
+  </div>
+</div>

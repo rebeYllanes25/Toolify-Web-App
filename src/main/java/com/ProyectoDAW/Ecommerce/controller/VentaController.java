@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ProyectoDAW.Ecommerce.dto.*;
+import com.ProyectoDAW.Ecommerce.dto.response.ResultadoResponse;
 import org.springframework.http.HttpHeaders;
 
 
@@ -168,8 +169,6 @@ public class VentaController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
-
-	
 	@PutMapping("/{idVenta}/cancelar")
     public ResponseEntity<ResultadoResponse> cancelarVenta(
             @PathVariable Integer idVenta) {

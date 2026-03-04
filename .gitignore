@@ -161,4 +161,6 @@ $RECYCLE.BIN/
 *.lnk
 
 
-# End of https://www.gitignore.io/api/git,java,maven,eclipse,windows
+**/firebase-service-account.json
+
+# End of https://www.gitignore.io/api/git,java,maven,eclipse,windowsfirebase-service-account.json

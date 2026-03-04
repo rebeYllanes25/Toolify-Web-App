@@ -1,7 +1,18 @@
 import Swal from 'sweetalert2';
 
 export class AlertService {
-  static confirm(
+  
+  static success(message: string, title = 'Éxito') {
+    Swal.fire({
+      icon: 'success',
+      title,
+      text: message,
+      timer: 2000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+  }
+static confirm(
     message: string,
     title = '¿Estás seguro?',
     confirmButtonText = 'Sí',
@@ -17,18 +28,6 @@ export class AlertService {
       reverseButtons: true,
     }).then((result) => result.isConfirmed);
   }
-
-  static success(message: string, title = 'Éxito') {
-    Swal.fire({
-      icon: 'success',
-      title,
-      text: message,
-      timer: 2000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
-  }
-
   static error(message: string, title = 'Error') {
     Swal.fire({
       icon: 'error',
@@ -52,7 +51,7 @@ export class AlertService {
       icon: 'error',
       title: 'Error',
       text: message,
-      confirmButtonText: 'OK',
+      confirmButtonText: 'OK'
     });
   }
 }

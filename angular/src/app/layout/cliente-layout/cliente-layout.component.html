@@ -170,8 +170,8 @@
         <div *ngFor="let item of carrito"
           class="d-flex mb-3 align-items-start p-3 rounded bg-light shadow-sm position-relative">
           <!-- Imagen -->
-          <ng-container *ngIf="item.producto.base64Img; else imagenLocal">
-            <img [src]="'data:image/png;base64,' + item.producto.base64Img" alt="Producto" width="70" height="70"
+          <ng-container *ngIf="item.producto.imagen; else imagenLocal">
+            <img [src]="item.producto.imagen" alt="Producto" width="70" height="70"
               class="rounded me-3 object-fit-cover" />
           </ng-container>
           <ng-template #imagenLocal>

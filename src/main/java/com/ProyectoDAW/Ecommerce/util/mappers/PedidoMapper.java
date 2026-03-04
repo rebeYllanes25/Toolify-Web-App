@@ -25,7 +25,7 @@ public class PedidoMapper {
                         d.getProducto().getIdProducto(),
                         d.getProducto().getNombre(),
                         d.getProducto().getDescripcion(),
-                        d.getProducto().getBase64Img(),
+                        d.getProducto().getImagen(),
                         d.getProducto().getPrecio(),
                         d.getCantidad(),
                         d.getSubTotal()
@@ -40,6 +40,7 @@ public class PedidoMapper {
                 v.getUsuario().getNombres(),
                 p.getFecha(),
                 v.getTotal(),
+                p.getQrVerificacion(),
                 p.getDireccionEntrega(),
                 p.getLatitud(),
                 p.getLongitud(),
@@ -47,9 +48,12 @@ public class PedidoMapper {
                 detallesDTO,
                 p.getRepartidor() != null ? p.getRepartidor().getIdUsuario() : null,
                 p.getRepartidor() != null ? p.getRepartidor().getNombres() : null,
+                p.getRepartidor() != null ? p.getRepartidor().getApePaterno() : null,
+                p.getRepartidor() != null ? p.getRepartidor().getTelefono() : null,	
+                
                 v.getEspecificaciones(),
-                p.getEstado(),
-                p.getQrVerificacion()
+                p.getEstado()
+                
         );
     }
 }

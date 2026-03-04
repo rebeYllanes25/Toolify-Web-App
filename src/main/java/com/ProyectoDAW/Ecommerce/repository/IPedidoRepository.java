@@ -1,7 +1,8 @@
 package com.ProyectoDAW.Ecommerce.repository;
 
-import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
+import com.ProyectoDAW.Ecommerce.dto.ComentarioPuntuacionDTO;
 import com.ProyectoDAW.Ecommerce.model.Pedido;
+import com.ProyectoDAW.Ecommerce.dto.RepartidorImagenStatsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,10 +48,26 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
             LEFT JOIN v.detalles d
             LEFT JOIN d.producto prod
             LEFT JOIN FETCH p.repartidor r
-            WHERE u.idUsuario = :idCliente
+            WHERE u.idUsuario = :idCliente AND
+            p.estado = "PE" OR p.estado = "AS" OR p.estado = "EC" OR p.estado = "CR"
+        """)
+        List<Pedido> listarPedidosPorClienteInicio(@Param("idCliente") Integer idCliente);
+
+    
+    @Query("""
+            SELECT DISTINCT p
+            FROM Pedido p
+            JOIN FETCH p.venta v
+            JOIN FETCH v.usuario u
+            LEFT JOIN v.detalles d
+            LEFT JOIN d.producto prod
+            LEFT JOIN FETCH p.repartidor r
+            WHERE u.idUsuario = :idCliente AND
+            p.estado = "EN"
         """)
         List<Pedido> listarPedidosPorCliente(@Param("idCliente") Integer idCliente);
-
+    
+    
     @Modifying
     @Transactional
     @Query("""
@@ -93,4 +110,29 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
     List<Object[]> resumenMensualVentasPedidos(@Param("anio") int anio);
     
     Optional<Pedido> findByVenta_IdVenta(Integer idVenta);
+    
+    @Query(value="""
+    		SELECT puntuacion,comentario 
+    		FROM tb_calificacion where id_pedido =:idPedido
+    		
+    		""", nativeQuery = true)
+    ComentarioPuntuacionDTO comentarioPuntuacion(@Param("idPedido")Integer idPedido);
+    
+    
+    // Contar pedidos entregados
+    @Query("SELECT COUNT(p) FROM Pedido p WHERE p.repartidor.idUsuario = :idRepartidor AND p.estado = 'EN'")
+    Long contarPedidosEntregadosPorRepartidor(@Param("idRepartidor") Integer idRepartidor);
+    
+    // Opción 1: Calcular tiempo real entre fechas
+    @Query("SELECT AVG(TIMESTAMPDIFF(MINUTE, p.fechaEnCamino, p.fechaEntregado)) " +
+           "FROM Pedido p " +
+           "WHERE p.repartidor.idUsuario = :idRepartidor " +
+           "AND p.estado = 'EN' " +
+           "AND p.fechaEnCamino IS NOT NULL " +
+           "AND p.fechaEntregado IS NOT NULL")
+    Double calcularTiempoPromedioEntrega(@Param("idRepartidor") Integer idRepartidor);
+    
+
+    
+    
 }

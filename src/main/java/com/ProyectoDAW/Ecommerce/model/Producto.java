@@ -53,19 +53,17 @@ public class Producto {
 	@Column(name="STOCK")
 	private Integer stock;
 
-	//@Lob
+	
 	@Column(name="IMAGEN")
-	private byte[] imagenBytes;
-
-	/*se agrega esta propiedad para que cuando se registre el producto
-	 el campo imagen no lo trate de convertir a formato JSON y solo guarde 
-	 defrente en la bd la imagen en bytes */
+	private String imagen;
+	
 	@JsonIgnore 
 	@Transient
-	private MultipartFile imagen;
+	private MultipartFile imagenUrl;
 	
-	@Transient
+	/*	@Transient
 	private String base64Img;
+	*/
 	
 	@Column(name="FECHA_REGISTRO")
 	private LocalDateTime fechaRegistro;

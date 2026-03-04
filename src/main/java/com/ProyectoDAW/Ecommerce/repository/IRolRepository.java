@@ -9,4 +9,5 @@ import com.ProyectoDAW.Ecommerce.model.Rol;
 public interface IRolRepository extends JpaRepository<Rol, Integer>{
     Optional<Rol> findByDescripcion(String nombre);
 
+
 }

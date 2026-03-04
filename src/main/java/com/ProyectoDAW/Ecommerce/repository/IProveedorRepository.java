@@ -14,7 +14,7 @@ import com.ProyectoDAW.Ecommerce.model.Proveedor;
 
 public interface IProveedorRepository extends JpaRepository<Proveedor, Integer>{
 
-	@Query("SELECT p FROM Proveedor p where p.estado = TRUE")
+	@Query("SELECT p FROM Proveedor p WHERE p.estado = TRUE ORDER BY p.id")
 	List<Proveedor> findProveedoresActivos();
 
 	@Query("SELECT p FROM Proveedor p where p.ruc LIKE CONCAT ('%', :ruc,'%')")

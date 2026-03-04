@@ -1,17 +1,18 @@
 package com.ProyectoDAW.Ecommerce.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class LoginRequest {
-    private String correo;
-    private String clave;
+@NoArgsConstructor
+public class RepartidorImagenStatsDTO {
 
-    // getters y setters
+	
+	private String imagenUsuario;
+    private Long totalPedidosEntregados;
+	
 }

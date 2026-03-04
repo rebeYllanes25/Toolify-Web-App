@@ -64,4 +64,10 @@ public class Usuario {
 	
 	@Column(name="ESTADO")
 	private Boolean estado;
+
+    @Column(name = "FCM_TOKEN", length = 500)
+    private String fcmToken;
+
+    @Column(name = "FCM_TOKEN_FECHA")
+    private LocalDateTime fcmTokenFecha;
 }

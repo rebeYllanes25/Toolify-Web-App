@@ -1,67 +1,169 @@
-<div class="containerFiltros">
-    <div class="containerFechas">
-        <div class="containerFechaInicio">
-            <label>Fecha Inicio</label>
-            <input type="date" [(ngModel)]="fechaInicio" (change)="onChangeFechas()">
+<div class="report-container">
+  <!-- Header con título -->
+  <div class="report-header">
+    <h3><i class="fa-solid fa-chart-line me-2"></i>Reporte de Ventas</h3>
+    <p class="text-muted">Visualiza y descarga reportes detallados de ventas</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-card">
+    <div class="filters-grid">
+      <!-- Fechas -->
+      <div class="filter-group date-filters">
+        <div class="input-wrapper">
+          <label><i class="fa-solid fa-calendar-day me-2"></i>Fecha Inicio</label>
+          <input type="date" [(ngModel)]="fechaInicio" (change)="onChangeFechas()" class="form-control">
         </div>
-        <div class="containerFechaFin">
-            <label>Fecha Fin</label>
-            <input type="date" [(ngModel)]="fechaFin" (change)="onChangeFechas()">
+        <div class="input-wrapper">
+          <label><i class="fa-solid fa-calendar-check me-2"></i>Fecha Fin</label>
+          <input type="date" [(ngModel)]="fechaFin" (change)="onChangeFechas()" class="form-control">
         </div>
-    </div>
-    <div>
-        <label>Orden:</label>
-        <select [(ngModel)]="tipoVenta" (change)="onChangeTipoVenta()">
-            <option [ngValue]="undefined">Tipo de Venta</option>
-            <option value="P">Presencial</option>
-            <option value="R">Remota</option>
+      </div>
+
+      <!-- Tipo de Venta -->
+      <div class="filter-group">
+        <label><i class="fa-solid fa-filter me-2"></i>Tipo de Venta</label>
+        <select [(ngModel)]="tipoVenta" (change)="onChangeTipoVenta()" class="form-select">
+          <option [ngValue]="undefined">Todos los tipos</option>
+          <option value="P"><i class="fa-solid fa-store"></i> Presencial</option>
+          <option value="R"><i class="fa-solid fa-globe"></i> Remota</option>
         </select>
+      </div>
+
+      <!-- Botón Descargar -->
+      <div class="filter-group align-self-end">
+        <button class="btn-download" (click)="generarPDF()">
+          <i class="fa-solid fa-file-pdf me-2"></i>
+          Descargar PDF
+        </button>
+      </div>
     </div>
+  </div>
 
-     <div>
-      <button (click)="generarPDF()">Descargar PDF</button>
-    </div>
-</div>
+  <!-- Tabla -->
+  <div class="table-card">
+    <table mat-table [dataSource]="dataSource" class="sales-table">
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="idVenta">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-hashtag me-1"></i>
+            ID Venta
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let v">
+          <span class="badge-id">{{ v.idVenta }}</span>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="idVenta">
-        <th mat-header-cell *matHeaderCellDef>ID Venta</th>
-        <td mat-cell *matCellDef="let v">{{ v.idVenta }}</td>
-    </ng-container>
+      <ng-container matColumnDef="nombresCompletos">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-user me-1"></i>
+            Cliente
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let v">
+          <div class="user-cell">
+            <i class="fa-solid fa-circle-user me-2"></i>
+            {{ v.nombresCompletos }}
+          </div>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="nombresCompletos">
-        <th mat-header-cell *matHeaderCellDef>Nombres User</th>
-        <td mat-cell *matCellDef="let v">{{ v.nombresCompletos }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="direccionUser">
-        <th mat-header-cell *matHeaderCellDef>Direccion User</th>
+      <ng-container matColumnDef="direccionUser">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-location-dot me-1"></i>
+            Dirección
+          </span>
+        </th>
         <td mat-cell *matCellDef="let v">{{ v.direccionUser }}</td>
-    </ng-container>
+      </ng-container>
 
-    <ng-container matColumnDef="total">
-        <th mat-header-cell *matHeaderCellDef>Precio Total</th>
-        <td mat-cell *matCellDef="let v">{{ v.total }}</td>
-    </ng-container>
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-dollar-sign me-1"></i>
+            Total
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let v">
+          <span class="price-tag">S/ {{ v.total | number:'1.2-2' }}</span>
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="estado">
-        <th mat-header-cell *matHeaderCellDef>Estado</th>
-        <td mat-cell *matCellDef="let v">{{ v.estado }}</td>
-    </ng-container>
-        <ng-container matColumnDef="tipoVenta">
-        <th mat-header-cell *matHeaderCellDef>Tipo De Venta</th>
-        <td mat-cell *matCellDef="let v">{{ v.tipoVenta }}</td>
-    </ng-container>
+     <ng-container matColumnDef="estado">
+  <th mat-header-cell *matHeaderCellDef>
+    <span class="header-content">
+      <i class="fa-solid fa-circle-info me-1"></i>
+      Estado
+    </span>
+  </th>
+  <td mat-cell *matCellDef="let v">
+    <span class="status-badge"
+      [ngClass]="estadoMap[v.estado]?.cssClass">
+      {{ estadoMap[v.estado]?.label }}
+    </span>
+  </td>
+</ng-container>
 
-    <ng-container matColumnDef="fecha">
-        <th mat-header-cell *matHeaderCellDef>Fecha Generado</th>
-        <td mat-cell *matCellDef="let v">{{ v.fecha }}</td>
-    </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
-</table>
-  <mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons
-    aria-label="Select page of periodic elements">
-  </mat-paginator>
+      <ng-container matColumnDef="tipoVenta">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-tag me-1"></i>
+            Tipo
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let v">
+          <span class="type-badge" [ngClass]="{
+            'type-presencial': v.tipoVenta === 'P',
+            'type-remota': v.tipoVenta === 'R'
+          }">
+            <i class="fa-solid" [ngClass]="{
+              'fa-store': v.tipoVenta === 'P',
+              'fa-globe': v.tipoVenta === 'R'
+            }"></i>
+            {{ v.tipoVenta === 'P' ? 'Presencial' : 'Remota' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="header-content">
+            <i class="fa-solid fa-calendar me-1"></i>
+            Fecha
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let v">
+          <span class="date-cell">
+            <i class="fa-solid fa-clock me-1"></i>
+            {{ v.fecha | date:'dd/MM/yyyy' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas;" class="table-row"></tr>
+    </table>
+
+    <!-- Mensaje cuando no hay datos -->
+    <div class="no-data" *ngIf="!dataSource || dataSource.data?.length === 0">
+      <i class="fa-solid fa-inbox fa-3x mb-3"></i>
+      <p>No se encontraron ventas</p>
+      <small>Intenta ajustar los filtros de búsqueda</small>
+    </div>
+  </div>
+
+  <!-- Paginador -->
+  <div class="paginator-wrapper">
+    <mat-paginator 
+      [pageSizeOptions]="[5, 10, 25, 50]" 
+      [pageSize]="10" 
+      showFirstLastButtons
+      aria-label="Selecciona página">
+    </mat-paginator>
+  </div>
+</div>

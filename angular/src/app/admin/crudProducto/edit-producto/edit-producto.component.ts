@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-
 import { ProductoServiceService } from '../../service/producto-service.service';
+import { CategoriaServiceService } from '../../service/categoria-service.service';
+import { ProveedorService } from '../../service/proveedorService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Producto } from '../../../shared/model/producto.model';
-
-// Angular Material
+import { Categoria } from '../../../shared/model/categoria.model';
+import { Proveedor } from '../../../shared/model/proveedor.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
-
-
-//alert IZI_TOAST_ALERT
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { AlertIziToast } from '../../../util/iziToastAlert.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-edit-producto',
@@ -26,101 +27,113 @@ import { AlertIziToast } from '../../../util/iziToastAlert.service';
     MatCardModule,
     MatButtonModule,
     MatTableModule,
-    MatInputModule
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
   ],
   templateUrl: './edit-producto.component.html',
-  styleUrl: './edit-producto.component.css'
+  styleUrls: ['./edit-producto.component.css'],
 })
 export class EditProductoComponent implements OnInit {
   producto: Producto = {
     idProducto: 0,
     nombre: '',
     descripcion: '',
-    proveedor: {
-      idProveedor: 0,
-      ruc:'',
-      razonSocial:'',
-      telefono:'',
-      direccion:'',
-      fechaRegistro:'',
-      estado:true,
-      distrito: {
-        idDistrito: 0,
-        nombre: ''
-      }
-    },
+    proveedor: { idProveedor: 0, distrito: { idDistrito: 0, nombre: '' } },
     categoria: { idCategoria: 0, descripcion: '' },
     precio: 0,
     stock: 0,
-    imagenBytes: '',
-    base64Img: '',
+    imagen: '',
     fechaRegistro: '',
-    estado: true
-  }
-  //actualiza Spring?
+    estado: true,
+  };
+
+  proveedores$!: Observable<Proveedor[]>;
+  categorias$!: Observable<Categoria[]>;
+
+  
+  imagenPreview: string | null = null;
+  imagenFile: File | null = null;
+  imagenCambiada: boolean = false;
+
+
   constructor(
     private productoService: ProductoServiceService,
+    private categoriaService: CategoriaServiceService,
+    private proveedorService: ProveedorService,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'))
+    this.proveedores$ = this.proveedorService.listarProveedor();
+    this.categorias$ = this.categoriaService.listaCategorias();
+
+    const id = Number(this.route.snapshot.paramMap.get('id'));
     this.productoService.detalleProducto(id).subscribe({
       next: (data) => {
-        this.producto = data
+        this.producto = data;
+         if (this.producto.imagen) {
+          this.imagenPreview = this.producto.imagen;
+        }
       },
-      error: (err) => {
-        console.log(err)
-      }
-    })
+      error: (err) => console.log(err),
+    });
   }
 
-  //funcion para que obtengamos el archivo seleccionado
-
-  onFileSelect(event: any) {
+   onFileSelect(event: any) {
     const file: File = event.target.files[0];
-    if (file) { //si tengo una imagen de la vista
+    if (file) {
+      this.imagenFile = file;
+      this.imagenCambiada = true;
+      
       const reader = new FileReader();
-
       reader.onload = () => {
-        const base64 = (reader.result as string).split(',')[1];
-        this.producto.base64Img = base64;
-        //una vez obtenemos la base64 de la iamgen seleccionada
-        //convertimos esto a imagenByte q es lo que se guarda en
-        //la base de datos
-        this.producto.imagenBytes = this.convertBase64ToByte(base64);
-      }
+        this.imagenPreview = reader.result as string;
+      };
       reader.readAsDataURL(file);
     }
   }
 
-  //funcion para que convierta de base64 a imagenBytes
+  actualizarProducto() {
+    if (!this.imagenCambiada && !this.producto.imagen) {
+      AlertIziToast.warning('Debes seleccionar una imagen.');
+      return;
+    }
 
-  convertBase64ToByte(base64: string): string {
-    return base64;
+      const imagenParaEnviar = this.imagenCambiada ? this.imagenFile : null;
+
+    this.productoService
+      .actualizarProducto(this.producto.idProducto!, this.producto, imagenParaEnviar)
+      .subscribe({
+        next: (data) => {
+          AlertIziToast.info(
+            `Actualizaste el producto ${data.nombre} código: ${data.idProducto}`
+          );
+          this.router.navigate(['/admin/crudProducto']);
+        },
+        error: (err) => {
+          console.log('error', err);
+          AlertIziToast.warning('Error al actualizar el producto.');
+        }
+      });
   }
 
-  actualizarProducto() {
-    this.productoService.actualizarProducto(this.producto.idProducto!, this.producto).subscribe({
-      next: (data) => {
-        console.log("Se actualizo el producto code", data.idProducto)
-        AlertIziToast.info(`Actualizaste el producto ${data.nombre} codigo: ${data.idProducto}`);
-        this.router.navigate(['/admin/crudProducto'])
-      },
-      error: (err) => {
-        console.log("error", err)
-        console.log("id producto", this.producto.idProducto)
-        console.log("nombre ", this.producto.nombre)
-        console.log("proveedor", this.producto.proveedor.idProveedor)
-        console.log("id producto", this.producto.idProducto)
-        console.log("categoria", this.producto.categoria.idCategoria)
+ removeImage(event: Event): void {
+    event.stopPropagation();
+    this.imagenPreview = null;
+    this.imagenFile = null;
+    this.imagenCambiada = true; // Marcar que se quitó la imagen
 
-        console.log("precio", this.producto.precio)
-        console.log("stock", this.producto.stock)
-        console.log("IMAGEN BYTE ENVIANDO", this.producto.imagenBytes)
-        console.log("IMAGEN 64 OBTENIDO ", this.producto.base64Img)
-      }
-    })
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+  onImageError(event: Event) {
+    (event.target as HTMLImageElement).src = 'assets/no-imagen.jpg';
   }
 }

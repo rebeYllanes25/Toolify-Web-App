@@ -1,0 +1,93 @@
+<div class="pedido-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h2><i class="fa-solid fa-clock"></i>Pedidos Pendientes</h2>
+        <p class="subtitle">Gestiona y acepta los pedidos de tus clientes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Card -->
+  <div class="stats-card" *ngIf="!isLoading">
+    <div class="stats-mini">
+      <div class="stat-item">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <span>{{ pedidos.length }} pedidos pendientes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <p>Cargando pedidos...</p>
+  </div>
+
+  <!-- Tabla de pedidos -->
+  <div class="table-wrapper" *ngIf="!isLoading && pedidos.length > 0">
+    <table class="pedido-table">
+      <thead>
+        <tr>
+          <th><i class="fa-solid fa-hashtag me-2"></i># Pedido</th>
+          <th><i class="fa-solid fa-user me-2"></i>Cliente</th>
+          <th><i class="fa-solid fa-location-dot me-2"></i>Dirección</th>
+          <th><i class="fa-solid fa-dollar-sign me-2"></i>Total</th>
+          <th><i class="fa-solid fa-calendar me-2"></i>Fecha</th>
+          <th><i class="fa-solid fa-gear me-2"></i>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidos">
+          <td>
+            <span class="badge-pedido">
+              <i class="fa-solid fa-receipt"></i>
+              {{ pedido.numPedido }}
+            </span>
+          </td>
+          <td>
+            <div class="cliente-info">
+              <div class="cliente-icon">
+                {{ pedido.nomCliente?.charAt(0)?.toUpperCase() }}
+              </div>
+              <span class="cliente-nombre">{{ pedido.nomCliente }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="direccion-info">
+              <i class="fa-solid fa-map-marker-alt"></i>
+              <span class="direccion-texto">{{ pedido.direccionEntrega }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="precio-total">
+              S/ {{ pedido.total | number:'1.2-2' }}
+            </span>
+          </td>
+          <td>
+            <span class="fecha-badge">
+              <i class="fa-solid fa-clock"></i>
+              {{ pedido.fecha | date:'short' }}
+            </span>
+          </td>
+          <td>
+            <button 
+              class="btn-aceptar" 
+              (click)="aceptarPedido(pedido.idPedido)" 
+              [disabled]="pedido.estado === 'ACEPTADO'">
+              <i class="fa-solid" [ngClass]="pedido.estado === 'ACEPTADO' ? 'fa-check-circle' : 'fa-check'"></i>
+              {{ pedido.estado === 'ACEPTADO' ? 'Aceptado' : 'Aceptar Pedido' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Sin pedidos -->
+  <div *ngIf="!isLoading && pedidos.length === 0" class="sin-pedidos">
+    <i class="fa-solid fa-box-open"></i>
+    <p>No hay pedidos pendientes en este momento</p>
+  </div>
+</div>

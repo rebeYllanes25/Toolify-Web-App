@@ -1,44 +1,129 @@
-<mat-card class="proveedor-edit-card">
-  <h2>Actualizar Proveedor</h2>
-
-  <form (ngSubmit)="actualizarProveedor()" class="form-grid">
-
-    <mat-form-field appearance="outline">
-      <mat-label>Código Proveedor</mat-label>
-      <input matInput [(ngModel)]="proveedor.idProveedor" name="idProveedor" readonly />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>RUC</mat-label>
-      <input matInput [(ngModel)]="proveedor.ruc" name="ruc" required />
-    </mat-form-field>
-
-
-    <mat-form-field appearance="outline" class="full-span">
-      <mat-label>Razón Social</mat-label>
-      <input matInput [(ngModel)]="proveedor.razonSocial" name="razonSocial" required />
-    </mat-form-field>
-
-
-    <mat-form-field appearance="outline">
-      <mat-label>Teléfono</mat-label>
-      <input matInput [(ngModel)]="proveedor.telefono" name="telefono" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>ID Distrito</mat-label>
-      <input matInput [(ngModel)]="proveedor.distrito.idDistrito" name="idDistrito" required />
-    </mat-form-field>
-
-
-    <mat-form-field appearance="outline" class="full-span">
-      <mat-label>Dirección</mat-label>
-      <input matInput [(ngModel)]="proveedor.direccion" name="direccion" />
-    </mat-form-field>
-
-
-    <div class="form-actions">
-      <button mat-raised-button color="primary" type="submit">Guardar</button>
+<div class="form-container">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-content">
+      <button class="btn-back" routerLink="/admin/crudProveedor" matTooltip="Volver al listado">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="title-section">
+        <h2><i class="fa-solid fa-pen-to-square me-2"></i>Editar Proveedor</h2>
+        <p class="subtitle">Actualiza la información del proveedor</p>
+      </div>
     </div>
-  </form>
-</mat-card>
+  </div>
+
+  <!-- Formulario -->
+  <div class="form-card">
+    <form (ngSubmit)="actualizarProveedor()" class="product-form">
+
+      <!-- Sección: Identificación -->
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fa-solid fa-fingerprint"></i>
+          <h3>Identificación</h3>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width readonly-field">
+          <mat-label>
+            <i class="fa-solid fa-hashtag me-2"></i>
+            Código Proveedor
+          </mat-label>
+          <input matInput [(ngModel)]="proveedor.idProveedor" name="idProveedor" readonly />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>
+            <i class="fa-solid fa-id-card me-2"></i>
+            RUC
+          </mat-label>
+          <input matInput [(ngModel)]="proveedor.ruc" name="ruc" required placeholder="Ej: 20487654321" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>
+            <i class="fa-solid fa-building me-2"></i>
+            Razón Social
+          </mat-label>
+          <input matInput [(ngModel)]="proveedor.razonSocial" name="razonSocial" required placeholder="Ej: Proveedor SAC" />
+        </mat-form-field>
+      </div>
+
+      <!-- Sección: Contacto -->
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fa-solid fa-phone"></i>
+          <h3>Contacto</h3>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>
+            <i class="fa-solid fa-phone me-2"></i>
+            Teléfono
+          </mat-label>
+          <input matInput [(ngModel)]="proveedor.telefono" name="telefono" placeholder="Ej: 987654321" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>
+            <i class="fa-solid fa-map-location-dot me-2"></i>
+            Distrito
+          </mat-label>
+          <mat-select [(ngModel)]="proveedor.distrito.idDistrito" name="idDistrito" required>
+            <mat-option *ngFor="let dist of distritos$ | async" [value]="dist.idDistrito">
+              {{ dist.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>
+            <i class="fa-solid fa-location-dot me-2"></i>
+            Dirección
+          </mat-label>
+          <input matInput [(ngModel)]="proveedor.direccion" name="direccion" placeholder="Ej: Av. Siempre Viva 123" />
+        </mat-form-field>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" routerLink="/admin/crudProveedor" mat-button>
+          <i class="fa-solid fa-xmark me-2"></i>
+          Cancelar
+        </button>
+        <button type="submit" class="btn-submit">
+          <i class="fa-solid fa-check me-2"></i>
+          Actualizar Proveedor
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Card de información -->
+  <div class="info-card">
+    <div class="info-header">
+      <i class="fa-solid fa-circle-info"></i>
+      <h4>Información de Actualización</h4>
+    </div>
+    <div class="info-content">
+      <div class="info-item">
+        <i class="fa-solid fa-calendar"></i>
+        <div>
+          <strong>Fecha de Registro</strong>
+          <p>{{ proveedor.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fa-solid fa-toggle-on"></i>
+        <div>
+          <strong>Estado</strong>
+          <p>
+            <span class="status-badge" [ngClass]="{'active': proveedor.estado, 'inactive': !proveedor.estado}">
+              {{ proveedor.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

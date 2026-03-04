@@ -54,20 +54,20 @@ public interface IProductoRepository extends JpaRepository<Producto, Integer> {
 	// listados para los graficos
 
 	@Query(value = """
-			  SELECT
-			     ct.DESCRIPCION  AS descripcion,
-			     SUM(p.STOCK) AS totalProductos
-			 FROM TB_PRODUCTO p
-			 INNER JOIN TB_CATEGORIA  ct ON p.ID_CATEGORIA  = ct.ID_CATEGORIA
-			 GROUP BY ct.DESCRIPCION
-			 ORDER BY totalProductos ASC
-			""", nativeQuery = true)
+		    SELECT
+		        ct.DESCRIPCION AS descripcion,
+		        COUNT(p.ID_PRODUCTO) AS totalProductos
+		    FROM TB_PRODUCTO p
+		    INNER JOIN TB_CATEGORIA ct ON p.ID_CATEGORIA = ct.ID_CATEGORIA
+		    GROUP BY ct.DESCRIPCION
+		    ORDER BY totalProductos ASC
+		    """, nativeQuery = true)
 	List<Object[]> totalStockPorCategoriaDescripcion();
 
 	@Query(value = """
 			 SELECT
 			     pv.razon_social AS razonSocial,
-			     SUM(p.stock) AS totalProductos
+			     COUNT(p.ID_PRODUCTO) AS totalProductos
 			 FROM tb_producto p
 			 INNER JOIN tb_proveedor pv ON p.id_proveedor = pv.id_proveedor
 			 GROUP BY pv.razon_social

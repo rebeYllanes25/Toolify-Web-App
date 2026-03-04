@@ -1,32 +1,99 @@
-<mat-card>
-  <h2>Nuevo Proveedor</h2>
+<div class="form-container">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-content">
+      <button class="btn-back" routerLink="/admin/proveedores" matTooltip="Volver al listado">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="title-section">
+        <h2><i class="fa-solid fa-truck me-2"></i>Nuevo Proveedor</h2>
+        <p class="subtitle">Complete la información del proveedor</p>
+      </div>
+    </div>
+  </div>
 
-  <form (ngSubmit)="guardarProveedor()">
-    <mat-form-field class="w-full">
-      <mat-label>RUC</mat-label>
-      <input matInput [(ngModel)]="proveedor.ruc" name="ruc" required />
-    </mat-form-field>
+  <!-- Formulario -->
+  <div class="form-card">
+    <form (ngSubmit)="guardarProveedor()" class="product-form">
 
-    <mat-form-field class="w-full">
-      <mat-label>Razón Social</mat-label>
-      <input matInput [(ngModel)]="proveedor.razonSocial" name="razonSocial" required />
-    </mat-form-field>
+      <!-- Información Básica -->
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fa-solid fa-circle-info"></i>
+          <h3>Información Básica</h3>
+        </div>
 
-    <mat-form-field class="w-full">
-      <mat-label>Teléfono</mat-label>
-      <input matInput [(ngModel)]="proveedor.telefono" name="telefono" />
-    </mat-form-field>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label><i class="fa-solid fa-id-card me-2"></i>RUC</mat-label>
+            <input matInput [(ngModel)]="proveedor.ruc" name="ruc" required placeholder="Ej: 20123456789">
+            <mat-hint>Ingrese el RUC del proveedor</mat-hint>
+          </mat-form-field>
 
-    <mat-form-field class="w-full">
-      <mat-label>Dirección</mat-label>
-      <input matInput [(ngModel)]="proveedor.direccion" name="direccion" />
-    </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label><i class="fa-solid fa-building me-2"></i>Razón Social</mat-label>
+            <input matInput [(ngModel)]="proveedor.razonSocial" name="razonSocial" required placeholder="Ej: ABC SAC">
+            <mat-hint>Nombre legal del proveedor</mat-hint>
+          </mat-form-field>
 
-    <mat-form-field class="w-full">
-      <mat-label>ID Distrito</mat-label>
-      <input matInput [(ngModel)]="proveedor.distrito.idDistrito" name="idDistrito" required/>
-    </mat-form-field>
-    
-    <button mat-raised-button color="primary" type="submit">Guardar</button>
-  </form>
-</mat-card>
+          <mat-form-field appearance="outline">
+            <mat-label><i class="fa-solid fa-phone me-2"></i>Teléfono</mat-label>
+            <input matInput [(ngModel)]="proveedor.telefono" name="telefono" placeholder="Ej: 987654321">
+            <mat-hint>Opcional</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label><i class="fa-solid fa-map-marker-alt me-2"></i>Dirección</mat-label>
+            <input matInput [(ngModel)]="proveedor.direccion" name="direccion" placeholder="Ej: Av. Siempre Viva 123">
+            <mat-hint>Opcional</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label><i class="fa-solid fa-city me-2"></i>Distrito</mat-label>
+            <mat-select [(ngModel)]="proveedor.distrito.idDistrito" name="idDistrito" required>
+              <mat-option *ngFor="let dist of distritos$ | async" [value]="dist.idDistrito">
+                {{ dist.nombre }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Seleccione el distrito del proveedor</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn-cancel" 
+          routerLink="/admin/proveedores"
+          mat-button>
+          <i class="fa-solid fa-xmark me-2"></i>
+          Cancelar
+        </button>
+        <button 
+  type="submit" 
+  class="btn-submit"
+  [disabled]="!formularioValido()">
+  <i class="fa-solid fa-check me-2"></i>
+  Guardar Proveedor
+</button>
+
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Card de ayuda -->
+  <div class="help-card">
+    <div class="help-header">
+      <i class="fa-solid fa-lightbulb"></i>
+      <h4>Consejos</h4>
+    </div>
+    <ul class="help-list">
+      <li><i class="fa-solid fa-check"></i>Verifique que el RUC sea válido</li>
+      <li><i class="fa-solid fa-check"></i>Use la razón social correcta</li>
+      <li><i class="fa-solid fa-check"></i>Agregue un teléfono de contacto</li>
+      <li><i class="fa-solid fa-check"></i>Seleccione el distrito correcto</li>
+    </ul>
+  </div>
+</div>

@@ -9,8 +9,8 @@ export interface Producto {
   categoria: Categoria;
   precio: number;
   stock: number;
-  imagenBytes?: string;
-  base64Img?: string;
+  imagen?: string;
+
   fechaRegistro?: string;
   estado: boolean;
 }

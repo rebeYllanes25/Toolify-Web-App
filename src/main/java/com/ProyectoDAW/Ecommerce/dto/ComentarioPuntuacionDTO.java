@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Setter @Getter
 @NoArgsConstructor
-public class ResultadoResponse {
-	private boolean valor;
-	private String mensaje;
+@AllArgsConstructor
+public class ComentarioPuntuacionDTO {
+	
+	private int puntuacion;
+	private String comentario;
 }

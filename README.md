@@ -51,7 +51,7 @@ Infrastructure
 
 | Technology| Use |
 |----------|:---------------:|
-| **Render** | Backend y bd despliegue0 |
+| **Render** | Backend y bd despliegue |
 | **Vercel** | Frontend despliegue |
 | **Docker** | Contenedor para el monolito |
 | **Kubernetes** | Organizador para contenedores |

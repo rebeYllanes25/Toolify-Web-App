@@ -59,25 +59,32 @@ Infrastructure
 </br>
 
 ## 🏗️ Arquitectura
-La arquitectura general es de tipo cliente-servidor desacoplada, organizada como:
+La arquitectura general es de tipo cliente-servidor desacoplada, donde el frontend y el backend se comunican mediante servicios REST. El backend sigue una arquitectura en capas (Layered / N-Tier), separando responsabilidades en controladores, servicios y repositorios para garantizar mantenibilidad y escalabilidad. El frontend está organizado bajo un enfoque modular por dominios y roles, incorporando lazy loading para optimizar el rendimiento.
 
-MicroServices
-| Service | Port | Description |
-|----------|:------:|:-----------:|
-| **user-service** | 8081:8081 | Main service where you call the other services |
-| **table-service**| 8082:8082 |  Table management service  | 
-| **reservation-service** | 8083:8083 | Service for registering reservations and inquiries |
-| **qualification-service**| 8084:8084 | Service for recording grades |
-| **payment-service** | 8085:8085  | Service for processing payments on orders or reservations |
-| **order-service** | 8086:8086  | Service for order management, registration, and queries |
-| **menu-service**| 8087:8087 |  Service to obtain the restaurant's menu | 
-| **event-service** | 8088:8088 |  Service to obtain all available events at the restaurant    | 
-| **api-gateway** | 8098:8098 |  Single entry point for all client requests, handles routing  | 
-| **eureka-server** | 8761:8761 | A service registry that allows microservices to discover and communicate with each other.   | 
-| **postgres** | 5433:5432 |  Main relational database for transactional data  | 
-| **mongodb** | 27017:27017 |  NoSQL database for storing chat messages and their logs  | 
-| **redis** | 6379:6379 |  High-performance cache for sessions, tokens, and frequently queried data  | 
-| **rabbitmq** | 5672:5672 |  Asynchronous message broker for event-based communication between microservices  |
+<ul>
+  <li>🎨 UI y navegación</li>
+  <li>🧩 Módulos por rol con lazy loading</li>
+  <li>🌐 Servicios HTTP hacia la API (environment.api_URL)</li>
+  <li>🔐 Manejo de token JWT y control de roles en el cliente</li>
+</ul>
+
+⚙️ Backend Spring Boot (src/main/java/...)
+
+<ul>
+  <li>📌 Controller: exposición de endpoints REST</li>
+  <li>🧠 Service: implementación de la lógica de negocio</li>
+  <li>🗄️ Repository: acceso a datos mediante JPA</li>
+  <li>📦 Model/DTO: entidades y objetos de transferencia</li>
+  <li>🔧 Config/Util: configuración de seguridad JWT, CORS, Firebase, Cloudinary y utilidades</li>
+</ul>
+
+🗄️ Base de datos PostgreSQL
+
+<ul>
+  <li>⚙️ Configurada en application.properties</li>
+  <li>📄 Script SQL disponible en base de datos/Bd_Toolify.sql</li>
+</ul>
+
 
 
 ## 👥 Contributors 
